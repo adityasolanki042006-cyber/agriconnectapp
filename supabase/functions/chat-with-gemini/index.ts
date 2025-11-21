@@ -100,6 +100,34 @@ serve(async (req) => {
             }
           },
           {
+            name: "get_weather",
+            description: "Get current weather and forecast for a specific location. Use this when users ask about weather conditions, temperature, rainfall, etc.",
+            parameters: {
+              type: "OBJECT",
+              properties: {
+                location: {
+                  type: "STRING",
+                  description: "City name or location (e.g., 'Delhi', 'Mumbai', 'Bangalore')"
+                }
+              },
+              required: ["location"]
+            }
+          },
+          {
+            name: "search_agricultural_prices",
+            description: "Search for real-time agricultural commodity prices, crop prices, market rates, and farming-related information using AI-powered search.",
+            parameters: {
+              type: "OBJECT",
+              properties: {
+                query: {
+                  type: "STRING",
+                  description: "What to search for (e.g., 'wheat price today', 'tomato market rate', 'fertilizer costs')"
+                }
+              },
+              required: ["query"]
+            }
+          },
+          {
             name: "count_records",
             description: "Count records in any table (products, orders, users, profiles)",
             parameters: {
@@ -155,6 +183,11 @@ DATABASE TABLES:
 - users: Contains user profiles with name, email, phone, user_type
 - profiles: Contains additional user profile information
 
+REAL-TIME DATA ACCESS:
+- Weather: Can fetch current weather, temperature, humidity, rainfall, and forecasts for any location worldwide
+- Agricultural Prices: Can search for real-time information about crop prices, commodity rates, fertilizer costs, and market information
+- Market Insights: Can provide information about agricultural trends, farming best practices, and industry updates
+
 USER AUTHENTICATION:
 - The user is ${isAuthenticated ? 'LOGGED IN' : 'NOT logged in (guest)'}
 - ${isAuthenticated ? 'You can query their orders and cart' : 'Orders and cart queries require login - suggest they sign in'}
@@ -164,17 +197,27 @@ NAVIGATION CAPABILITIES:
 - You can scroll to sections on the home page: hero, problem, solution, features, marketplace, fertilizer, pricing, footer
 
 INSTRUCTIONS:
-- Use database query tools when users ask about products, prices, orders, cart, or statistics
+- Use database query tools when users ask about products, prices, orders, cart, or statistics from the platform
+- Use get_weather tool when users ask about weather, temperature, rainfall, humidity, climate conditions for any location
+- Use search_agricultural_prices tool when users ask about:
+  * Current crop prices (wheat, rice, tomato, potato, etc.)
+  * Commodity market rates
+  * Fertilizer prices and costs
+  * Agricultural market trends
+  * Farming-related economic information
 - For orders and cart queries: Only query if user is authenticated, otherwise politely ask them to sign in
 - All product queries return the most recent items first
 - When no products match a search, be helpful: suggest viewing available products or navigating to the marketplace
 - If available_products are provided in tool results, mention some of them as alternatives
 - Use navigation tools when users want to go to a specific page or section (e.g., "take me to marketplace", "show me orders")
-- Always be helpful, conversational, and provide accurate information based on REAL database results
+- Always be helpful, conversational, and provide accurate information based on REAL database results and API calls
+- When providing weather information, mention temperature, conditions, and farming-relevant details like rainfall
+- When providing price information, clarify that market rates can vary by location and users should verify with local markets
 - When navigating, confirm the action (e.g., "Taking you to the marketplace now!")
-- Understand voice commands naturally (e.g., "tomato prices" = query products for tomatoes, "my orders" = query orders, "check cart" = query cart)
-- NEVER make up or hallucinate data - only use actual database query results
-- If a query returns no data, clearly state that and offer alternatives or navigation options`;
+- Understand voice commands naturally (e.g., "tomato prices" = query products for tomatoes, "my orders" = query orders, "check cart" = query cart, "weather in Delhi" = get weather, "wheat price today" = search agricultural prices)
+- NEVER make up or hallucinate data - only use actual database query results and real API responses
+- If a query returns no data, clearly state that and offer alternatives or navigation options
+- Be especially helpful for farmers by providing weather insights and market information that can help with farming decisions`;
 
     // Convert messages to Gemini format
     const contents = messages.map((msg: any) => {
@@ -391,6 +434,114 @@ INSTRUCTIONS:
                   total_items: totalItems,
                   total_price: totalPrice,
                   message: cartItems?.length === 0 ? 'Your cart is empty' : undefined
+                };
+              }
+              break;
+            }
+            
+            case 'get_weather': {
+              const location = args?.location;
+              if (!location) {
+                result = { error: 'Location parameter is required' };
+                break;
+              }
+
+              try {
+                // Use Open-Meteo Geocoding API to get coordinates
+                const geoResponse = await fetch(
+                  `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(location)}&count=1&language=en&format=json`
+                );
+                const geoData = await geoResponse.json();
+
+                if (!geoData.results || geoData.results.length === 0) {
+                  result = { error: 'Location not found', message: `Could not find location: ${location}` };
+                  break;
+                }
+
+                const { latitude, longitude, name, country } = geoData.results[0];
+
+                // Get current weather and forecast
+                const weatherResponse = await fetch(
+                  `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,rain,weather_code,wind_speed_10m&daily=temperature_2m_max,temperature_2m_min,precipitation_sum,rain_sum,weather_code&timezone=auto`
+                );
+                const weatherData = await weatherResponse.json();
+
+                result = {
+                  location: `${name}, ${country}`,
+                  coordinates: { latitude, longitude },
+                  current: {
+                    temperature: weatherData.current.temperature_2m,
+                    feels_like: weatherData.current.apparent_temperature,
+                    humidity: weatherData.current.relative_humidity_2m,
+                    precipitation: weatherData.current.precipitation,
+                    rain: weatherData.current.rain,
+                    wind_speed: weatherData.current.wind_speed_10m,
+                    weather_code: weatherData.current.weather_code
+                  },
+                  forecast: {
+                    max_temp: weatherData.daily.temperature_2m_max[0],
+                    min_temp: weatherData.daily.temperature_2m_min[0],
+                    precipitation: weatherData.daily.precipitation_sum[0],
+                    rain: weatherData.daily.rain_sum[0]
+                  },
+                  units: {
+                    temperature: '°C',
+                    precipitation: 'mm',
+                    wind_speed: 'km/h'
+                  }
+                };
+              } catch (error) {
+                console.error('Weather API error:', error);
+                result = { error: 'Failed to fetch weather data', details: error instanceof Error ? error.message : 'Unknown error' };
+              }
+              break;
+            }
+
+            case 'search_agricultural_prices': {
+              const query = args?.query;
+              if (!query) {
+                result = { error: 'Query parameter is required' };
+                break;
+              }
+
+              try {
+                // Use Gemini itself to search for agricultural prices
+                const searchResponse = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GOOGLE_GEMINI_API_KEY}`, {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json',
+                  },
+                  body: JSON.stringify({
+                    contents: [{
+                      parts: [{
+                        text: `Search and provide current information about: ${query}. Focus on Indian agricultural markets, commodity prices, and farming-related information. Provide specific numbers, sources, and current market rates where available. Keep the response concise and factual.`
+                      }]
+                    }],
+                    generationConfig: {
+                      temperature: 0.2,
+                      maxOutputTokens: 500
+                    }
+                  })
+                });
+
+                if (!searchResponse.ok) {
+                  throw new Error(`Search failed: ${searchResponse.status}`);
+                }
+
+                const searchData = await searchResponse.json();
+                const searchResult = searchData.candidates?.[0]?.content?.parts?.[0]?.text || 'No information found';
+
+                result = {
+                  query: query,
+                  information: searchResult,
+                  note: 'Information is based on available data and may need verification with local markets'
+                };
+              } catch (error) {
+                console.error('Agricultural price search error:', error);
+                result = { 
+                  error: 'Failed to search agricultural prices', 
+                  details: error instanceof Error ? error.message : 'Unknown error',
+                  message: 'Please try again or check local market rates'
                 };
               }
               break;
