@@ -13,6 +13,7 @@ const Navigation = () => {
     { name: 'Home', href: '/' },
     { name: 'Marketplace', href: '/marketplace' },
     { name: 'Orders', href: '/orders' },
+    { name: 'Order History', href: '/order-history' },
     { name: 'Vendors', href: '/vendors' },
     { name: 'Fertilizer Friend', href: '/fertilizer' },
     { name: 'Search', href: '/search' },

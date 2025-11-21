@@ -136,9 +136,19 @@ const Orders = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Header */}
           <div className="text-center mb-12">
-            <h1 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-6">
-              Your Orders
-            </h1>
+            <div className="flex justify-between items-center mb-6">
+              <h1 className="text-4xl lg:text-5xl font-bold text-gray-900">
+                Your Orders
+              </h1>
+              <Button 
+                variant="outline"
+                onClick={() => navigate('/order-history')}
+                className="hidden md:flex"
+              >
+                <Package className="w-4 h-4 mr-2" />
+                View Full History
+              </Button>
+            </div>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
               Track your orders and manage your purchases
             </p>
