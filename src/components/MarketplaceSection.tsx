@@ -121,16 +121,18 @@ const MarketplaceSection = () => {
               <div className="p-6">
                 {/* Product Header */}
                 <div className="flex items-start justify-between mb-4">
-                  <div className="w-16 h-16 flex items-center justify-center">
-                    {product.image && (product.image.startsWith('http://') || product.image.startsWith('https://')) ? (
+                  <div className="w-16 h-16 flex items-center justify-center rounded-lg overflow-hidden bg-gradient-to-br from-green-50 to-green-100">
+                    {product.image && (product.image.startsWith('http') || product.image.startsWith('data:image')) ? (
                       <img 
                         src={product.image} 
                         alt={product.name}
-                        className="w-full h-full object-cover rounded-lg"
+                        className="w-full h-full object-cover"
                         onError={(e) => {
-                          e.currentTarget.style.display = 'none';
-                          e.currentTarget.parentElement!.innerHTML = '🌾';
-                          e.currentTarget.parentElement!.classList.add('text-4xl');
+                          const parent = e.currentTarget.parentElement;
+                          if (parent) {
+                            e.currentTarget.remove();
+                            parent.innerHTML = '<span class="text-4xl">🌾</span>';
+                          }
                         }}
                       />
                     ) : (
