@@ -39,7 +39,7 @@ const FloatingAIChat = ({ isOpen: externalIsOpen, onOpenChange }: FloatingAIChat
     {
       id: 1,
       type: 'bot',
-      message: 'Hello! I\'m your AgriConnect AI assistant powered by Gemini 2.5 Flash. I can help you with:\n\n🌾 Product prices and availability\n📦 Your orders and tracking\n🛒 Your shopping cart\n🌤️ Real-time weather information\n💰 Current crop and commodity prices\n🧭 Navigate to different sections\n\nTry asking:\n• "Weather in Delhi"\n• "What\'s the wheat price today?"\n• "Show me tomato prices"\n• "Check my cart"\n• "Track my orders"',
+      message: 'Hello! I\'m AgriConnect AI, your intelligent assistant. I can help you with anything you need:\n\n💬 **General Questions**: Ask me about science, history, technology, math, culture, or any topic!\n🌾 **Agricultural Expertise**: Crop advice, fertilizers, farming practices\n🛍️ **Marketplace**: Product prices, availability, recommendations\n📦 **Orders & Cart**: Track orders, check cart, manage purchases\n🌤️ **Weather**: Real-time conditions for any location\n💰 **Market Prices**: Current crop and commodity rates\n\nI can answer ANY question - from farming tips to general knowledge. Just ask!',
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
     }
   ]);
