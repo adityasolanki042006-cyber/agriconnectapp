@@ -5,7 +5,7 @@ import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
-import { Loader2 } from 'lucide-react';
+import { Loader2, Home } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
 
 const SignIn = () => {
@@ -48,6 +48,13 @@ const SignIn = () => {
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-background to-primary/5 p-4">
       <Card className="w-full max-w-md p-8 shadow-xl">
         <div className="mb-6">
+          <Link
+            to="/"
+            className="inline-flex items-center text-sm text-muted-foreground hover:text-primary transition-colors mb-4"
+          >
+            <Home className="w-4 h-4 mr-1" />
+            Back to Home
+          </Link>
           <h1 className="text-3xl font-bold mb-2">Welcome Back</h1>
           <p className="text-muted-foreground">Sign in to your account</p>
         </div>
