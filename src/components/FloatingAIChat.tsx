@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input';
 import { useAppContext } from '@/context/AppContext';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { useNavigate } from 'react-router-dom';
 
 interface ChatMessage {
   id: number;
@@ -16,12 +17,13 @@ interface ChatMessage {
 
 const FloatingAIChat = () => {
   const { toast } = useToast();
+  const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
       id: 1,
       type: 'bot',
-      message: 'Hello! I\'m your AgriConnect AI assistant powered by Gemini 2.5 Flash. I have access to our complete database and can help you with products, orders, farming advice, and much more. How can I help you today?',
+      message: 'Hello! I\'m your AgriConnect AI assistant powered by Gemini 2.5 Flash. I have access to our complete database and can help you with products, orders, navigation, and much more. Try saying "Show me tomato prices" or "Take me to marketplace"!',
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
     }
   ]);
@@ -159,7 +161,7 @@ const FloatingAIChat = () => {
         throw new Error('Invalid response from AI');
       }
 
-      console.log('Received response from Gemini API');
+      console.log('Received response from Gemini API:', data);
 
       const botMessage: ChatMessage = {
         id: messages.length + 2,
@@ -169,6 +171,33 @@ const FloatingAIChat = () => {
       };
 
       setMessages(prev => [...prev, botMessage]);
+
+      // Handle navigation if present
+      if (data.navigation) {
+        console.log('Navigation action:', data.navigation);
+        
+        if (data.navigation.action === 'navigate' && data.navigation.page) {
+          setTimeout(() => {
+            navigate(data.navigation.page);
+            toast({
+              title: "Navigating",
+              description: `Taking you to ${data.navigation.page}`,
+            });
+          }, 500);
+        } else if (data.navigation.action === 'scroll' && data.navigation.section) {
+          setTimeout(() => {
+            const sectionId = data.navigation.section;
+            const element = document.getElementById(sectionId);
+            if (element) {
+              element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+              toast({
+                title: "Scrolling",
+                description: `Moving to ${data.navigation.section} section`,
+              });
+            }
+          }, 500);
+        }
+      }
     } catch (error: any) {
       console.error('Error in chat:', error);
 
