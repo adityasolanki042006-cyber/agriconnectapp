@@ -16,6 +16,57 @@ const Orders = () => {
   const { user, loading: authLoading } = useAuth();
   const [selectedOrder, setSelectedOrder] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [trackingStep, setTrackingStep] = useState(0);
+
+  // Demo order with tracking features
+  const demoOrder = {
+    id: 'demo-order-001',
+    order_number: 'AGR-2025-001',
+    tracking_id: 'TRK-AGR-2025-001-XYZ',
+    status: 'shipped',
+    total_amount: 2450,
+    customer_name: 'Demo Farmer',
+    customer_email: 'demo@agriconnect.com',
+    delivery_address: 'Village Rampur, District Meerut, Uttar Pradesh - 250001',
+    created_at: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+    items: [
+      {
+        id: '1',
+        name: 'Organic Wheat Seeds',
+        image: '🌾',
+        price: 15,
+        unit: 'kg',
+        quantity: 50
+      },
+      {
+        id: '2',
+        name: 'NPK Fertilizer (10:26:26)',
+        image: '🧪',
+        price: 120,
+        unit: 'kg',
+        quantity: 10
+      },
+      {
+        id: '3',
+        name: 'Premium Tomato Seeds',
+        image: '🍅',
+        price: 100,
+        unit: 'packet',
+        quantity: 5
+      }
+    ]
+  };
+
+  const trackingSteps = [
+    { label: 'Order Placed', location: 'AgriConnect Warehouse', time: '2 days ago', completed: true },
+    { label: 'Processing', location: 'Quality Check Department', time: '1 day ago', completed: true },
+    { label: 'Packed', location: 'Packaging Facility', time: '18 hours ago', completed: true },
+    { label: 'In Transit', location: 'Delhi Distribution Center', time: '12 hours ago', completed: true },
+    { label: 'Out for Delivery', location: 'Meerut Local Hub', time: '2 hours ago', completed: false },
+    { label: 'Delivered', location: 'Your Address', time: 'Expected Today', completed: false }
+  ];
+
+  const allOrders = orders.length > 0 ? orders : [demoOrder];
 
   useEffect(() => {
     if (!authLoading) {
@@ -26,6 +77,14 @@ const Orders = () => {
       }
     }
   }, [user, authLoading]);
+
+  // Animate tracking steps
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setTrackingStep((prev) => (prev + 1) % trackingSteps.length);
+    }, 3000);
+    return () => clearInterval(interval);
+  }, []);
 
   const getStatusProgress = (status: string) => {
     switch (status) {
@@ -85,18 +144,8 @@ const Orders = () => {
             </p>
           </div>
 
-          {orders.length === 0 ? (
-            <div className="text-center py-12">
-              <Package className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">No orders yet</h3>
-              <p className="text-gray-600 mb-6">Start shopping to see your orders here</p>
-              <Button className="btn-hero" onClick={() => navigate('/marketplace')}>
-                Browse Marketplace
-              </Button>
-            </div>
-          ) : (
-            <div className="space-y-6">
-              {orders.map((order) => (
+          <div className="space-y-6">
+            {allOrders.map((order) => (
                 <Card key={order.id} className="card-field">
                   <div className="p-6">
                     {/* Order Header */}
@@ -189,15 +238,85 @@ const Orders = () => {
                               </div>
                             </div>
 
-                            {/* Live Tracking Simulation */}
+                            {/* Enhanced Live Tracking with Animation */}
                             {(order.status === 'processing' || order.status === 'shipped') && (
-                              <div className="mt-6 p-4 bg-blue-50 rounded-lg">
-                                <div className="flex items-center space-x-3 mb-3">
-                                  <div className="w-3 h-3 bg-blue-600 rounded-full animate-pulse"></div>
-                                  <span className="font-medium text-blue-900">Order in Transit</span>
+                              <div className="mt-6 space-y-4">
+                                <h4 className="font-semibold text-gray-900">Live Tracking</h4>
+                                <div className="relative">
+                                  {trackingSteps.map((step, index) => (
+                                    <div 
+                                      key={index} 
+                                      className={`relative flex items-start mb-6 transition-all duration-500 ${
+                                        index <= trackingStep ? 'opacity-100 translate-x-0' : 'opacity-40 translate-x-2'
+                                      }`}
+                                    >
+                                      {/* Timeline Line */}
+                                      {index < trackingSteps.length - 1 && (
+                                        <div 
+                                          className={`absolute left-4 top-8 w-0.5 h-12 transition-all duration-500 ${
+                                            step.completed ? 'bg-green-500' : 'bg-gray-300'
+                                          }`}
+                                        />
+                                      )}
+                                      
+                                      {/* Step Icon */}
+                                      <div 
+                                        className={`relative z-10 flex items-center justify-center w-8 h-8 rounded-full transition-all duration-500 ${
+                                          step.completed 
+                                            ? 'bg-green-500 scale-110 animate-pulse' 
+                                            : index === trackingStep 
+                                            ? 'bg-blue-500 animate-bounce' 
+                                            : 'bg-gray-300'
+                                        }`}
+                                      >
+                                        {step.completed ? (
+                                          <CheckCircle className="w-5 h-5 text-white" />
+                                        ) : index === trackingStep ? (
+                                          <Truck className="w-5 h-5 text-white animate-pulse" />
+                                        ) : (
+                                          <Clock className="w-4 h-4 text-white" />
+                                        )}
+                                      </div>
+
+                                      {/* Step Content */}
+                                      <div className="ml-4 flex-1">
+                                        <div className={`font-medium ${
+                                          step.completed ? 'text-green-700' : 
+                                          index === trackingStep ? 'text-blue-700' : 
+                                          'text-gray-500'
+                                        }`}>
+                                          {step.label}
+                                        </div>
+                                        <div className="text-sm text-gray-600 flex items-center mt-1">
+                                          <MapPin className="w-3 h-3 mr-1" />
+                                          {step.location}
+                                        </div>
+                                        <div className="text-xs text-gray-500 mt-1">
+                                          {step.time}
+                                        </div>
+                                      </div>
+
+                                      {/* Active Step Indicator */}
+                                      {index === trackingStep && !step.completed && (
+                                        <div className="ml-auto">
+                                          <Badge className="bg-blue-100 text-blue-700 animate-pulse">
+                                            Current
+                                          </Badge>
+                                        </div>
+                                      )}
+                                    </div>
+                                  ))}
                                 </div>
-                                <div className="text-sm text-blue-800">
-                                  📍 Your order is being processed and will be shipped soon
+
+                                {/* Estimated Delivery */}
+                                <div className="mt-4 p-4 bg-gradient-to-r from-green-50 to-blue-50 rounded-lg border-l-4 border-green-500">
+                                  <div className="flex items-center justify-between">
+                                    <div>
+                                      <div className="font-semibold text-gray-900">Estimated Delivery</div>
+                                      <div className="text-sm text-gray-600 mt-1">Today by 6:00 PM</div>
+                                    </div>
+                                    <Truck className="w-8 h-8 text-green-600 animate-bounce" />
+                                  </div>
                                 </div>
                               </div>
                             )}
@@ -209,7 +328,6 @@ const Orders = () => {
                 </Card>
               ))}
             </div>
-          )}
         </div>
       </div>
     </div>
