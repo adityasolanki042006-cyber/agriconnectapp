@@ -15,15 +15,30 @@ const Index = () => {
     <div className="min-h-screen">
       <Navigation />
       <FloatingAIChat />
-      <HeroSection />
-      <ProblemSection />
-      <SolutionSection />
-      <FeaturesSection />
-      <MarketplaceSection />
-      <FertilizerSection />
-      <AIChatbotSection />
-      <PricingSection />
-      <Footer />
+      <div id="hero">
+        <HeroSection />
+      </div>
+      <div id="problem">
+        <ProblemSection />
+      </div>
+      <div id="solution">
+        <SolutionSection />
+      </div>
+      <div id="features">
+        <FeaturesSection />
+      </div>
+      <div id="marketplace">
+        <MarketplaceSection />
+      </div>
+      <div id="fertilizer">
+        <FertilizerSection />
+      </div>
+      <div id="pricing">
+        <PricingSection />
+      </div>
+      <div id="footer">
+        <Footer />
+      </div>
     </div>
   );
 };

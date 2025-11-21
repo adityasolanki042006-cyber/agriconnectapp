@@ -45,7 +45,7 @@ serve(async (req) => {
 
     console.log('Processing chat request with', messages.length, 'messages');
 
-    // Define tools for database access
+    // Define tools for database access and navigation
     const tools = [
       {
         function_declarations: [
@@ -97,6 +97,36 @@ serve(async (req) => {
               },
               required: ["table"]
             }
+          },
+          {
+            name: "navigate_to_page",
+            description: "Navigate to a different page on the website. Use this when user wants to go to marketplace, dashboard, orders, etc.",
+            parameters: {
+              type: "object",
+              properties: {
+                page: {
+                  type: "string",
+                  enum: ["/", "/marketplace", "/dashboard", "/orders", "/about", "/vendors", "/fertilizer-friend"],
+                  description: "The page route to navigate to"
+                }
+              },
+              required: ["page"]
+            }
+          },
+          {
+            name: "scroll_to_section",
+            description: "Scroll to a specific section on the current page. Use for hero, features, pricing, problem, solution sections.",
+            parameters: {
+              type: "object",
+              properties: {
+                section: {
+                  type: "string",
+                  enum: ["hero", "problem", "solution", "features", "marketplace", "fertilizer", "pricing", "footer"],
+                  description: "The section to scroll to"
+                }
+              },
+              required: ["section"]
+            }
           }
         ]
       }
@@ -112,13 +142,24 @@ serve(async (req) => {
     geminiMessages.unshift({
       role: 'user',
       parts: [{
-        text: `You are an AI assistant for AgriConnect, an agricultural marketplace platform. You have access to the following database tables:
+        text: `You are an AI assistant for AgriConnect, an agricultural marketplace platform. You have access to the following:
+
+DATABASE TABLES:
 - products: Contains agricultural products with name, price, category, vendor, stock_quantity
 - orders: Contains order information with customer details, status, delivery address
 - users: Contains user profiles with name, email, phone, user_type
 - profiles: Contains additional user profile information
 
-Use the provided tools to query the database when users ask about products, orders, or statistics. Always be helpful and provide accurate information based on the database.`
+NAVIGATION CAPABILITIES:
+- You can navigate users to different pages: home (/), marketplace, dashboard, orders, about, vendors, fertilizer-friend
+- You can scroll to sections on the home page: hero, problem, solution, features, marketplace, fertilizer, pricing, footer
+
+INSTRUCTIONS:
+- Use database query tools when users ask about products, prices, orders, or statistics
+- Use navigation tools when users want to go to a specific page or section (e.g., "take me to marketplace", "show me pricing")
+- Always be helpful, conversational, and provide accurate information
+- When navigating, confirm the action (e.g., "Taking you to the marketplace now!")
+- Understand voice commands naturally (e.g., "tomato prices" = query products for tomatoes)`
       }]
     });
 
@@ -275,6 +316,26 @@ Use the provided tools to query the database when users ask about products, orde
               break;
             }
             
+            case 'navigate_to_page': {
+              const page = functionCall.args?.page;
+              if (!page) {
+                result = { error: 'Page parameter is required' };
+                break;
+              }
+              result = { action: 'navigate', page, success: true };
+              break;
+            }
+            
+            case 'scroll_to_section': {
+              const section = functionCall.args?.section;
+              if (!section) {
+                result = { error: 'Section parameter is required' };
+                break;
+              }
+              result = { action: 'scroll', section, success: true };
+              break;
+            }
+            
             default:
               result = { error: 'Unknown function' };
           }
@@ -310,8 +371,26 @@ Use the provided tools to query the database when users ask about products, orde
     }
 
     console.log('Sending final response');
+    
+    // Check if there are any navigation actions in the conversation history
+    let navigationAction = null;
+    for (const msg of conversationHistory) {
+      if (msg.role === 'user' && msg.parts) {
+        for (const part of msg.parts as any[]) {
+          if (part.functionResponse?.response?.action) {
+            navigationAction = part.functionResponse.response;
+            break;
+          }
+        }
+      }
+      if (navigationAction) break;
+    }
+    
     return new Response(
-      JSON.stringify({ message: finalResponse }), 
+      JSON.stringify({ 
+        message: finalResponse,
+        navigation: navigationAction
+      }), 
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
 
