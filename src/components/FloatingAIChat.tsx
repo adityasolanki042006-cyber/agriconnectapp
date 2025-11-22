@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { MessageCircle, X, Send, Mic, Bot, User } from 'lucide-react';
+import { MessageCircle, X, Send, Mic, Bot, User, Image as ImageIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -14,6 +14,7 @@ interface ChatMessage {
   type: 'user' | 'bot';
   message: string;
   timestamp: string;
+  image?: string; // base64 image data
 }
 
 interface FloatingAIChatProps {
@@ -39,7 +40,7 @@ const FloatingAIChat = ({ isOpen: externalIsOpen, onOpenChange }: FloatingAIChat
     {
       id: 1,
       type: 'bot',
-      message: 'Hello! I\'m AgriConnect AI, your intelligent assistant. I can help you with anything you need:\n\n💬 **General Questions**: Ask me about science, history, technology, math, culture, or any topic!\n🌾 **Agricultural Expertise**: Crop advice, fertilizers, farming practices\n🛍️ **Marketplace**: Product prices, availability, recommendations\n📦 **Orders & Cart**: Track orders, check cart, manage purchases\n🌤️ **Weather**: Real-time conditions for any location\n💰 **Market Prices**: Current crop and commodity rates\n\nI can answer ANY question - from farming tips to general knowledge. Just ask!',
+      message: 'Hello! I\'m AgriConnect AI, your intelligent assistant. I can help you with anything you need:\n\n💬 **General Questions**: Ask me about science, history, technology, math, culture, or any topic!\n🌾 **Agricultural Expertise**: Crop advice, fertilizers, farming practices\n🛍️ **Marketplace**: Product prices, availability, recommendations\n📦 **Orders & Cart**: Track orders, check cart, manage purchases\n🌤️ **Weather**: Real-time conditions for any location\n💰 **Market Prices**: Current crop and commodity rates\n📷 **Image Analysis**: Send me photos and I\'ll analyze them (like Google Lens)!\n\nI can answer ANY question - from farming tips to general knowledge. Just ask or send an image!',
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
     }
   ]);
@@ -47,8 +48,10 @@ const FloatingAIChat = ({ isOpen: externalIsOpen, onOpenChange }: FloatingAIChat
   const [isListening, setIsListening] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [interimTranscript, setInterimTranscript] = useState('');
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const { addToCart, cart, orders } = useAppContext();
   const recognitionRef = useRef<any>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Initialize Speech Recognition
   useEffect(() => {
@@ -139,26 +142,76 @@ const FloatingAIChat = ({ isOpen: externalIsOpen, onOpenChange }: FloatingAIChat
     };
   }, [toast]);
 
+  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    // Check file size (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      toast({
+        title: "File too large",
+        description: "Please select an image smaller than 5MB",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    // Check file type
+    if (!file.type.startsWith('image/')) {
+      toast({
+        title: "Invalid file type",
+        description: "Please select an image file",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const base64 = e.target?.result as string;
+      setSelectedImage(base64);
+      toast({
+        title: "Image selected",
+        description: "Image ready to send. Add a message or send as is.",
+      });
+    };
+    reader.readAsDataURL(file);
+  };
+
   const handleSendMessage = async () => {
-    if (!newMessage.trim() || isLoading) return;
+    if ((!newMessage.trim() && !selectedImage) || isLoading) return;
 
     const userMessage: ChatMessage = {
       id: messages.length + 1,
       type: 'user',
-      message: newMessage,
+      message: newMessage || "What's in this image?",
+      image: selectedImage || undefined,
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
     };
 
     setMessages(prev => [...prev, userMessage]);
     setNewMessage('');
+    const imageToSend = selectedImage;
+    setSelectedImage(null);
     setIsLoading(true);
 
     try {
-      // Prepare conversation history for Gemini
-      const conversationHistory = [...messages, userMessage].map(msg => ({
-        role: msg.type === 'user' ? 'user' : 'assistant',
-        content: msg.message
-      }));
+      // Prepare conversation history for Gemini with image support
+      const conversationHistory = [...messages, userMessage].map(msg => {
+        if (msg.image) {
+          return {
+            role: msg.type === 'user' ? 'user' : 'assistant',
+            content: [
+              { type: 'text', text: msg.message },
+              { type: 'image_url', image_url: { url: msg.image } }
+            ]
+          };
+        }
+        return {
+          role: msg.type === 'user' ? 'user' : 'assistant',
+          content: msg.message
+        };
+      });
 
       console.log('Sending message to Gemini API...');
 
@@ -340,7 +393,14 @@ const FloatingAIChat = ({ isOpen: externalIsOpen, onOpenChange }: FloatingAIChat
                     ? 'bg-blue-600 text-white' 
                     : 'bg-gray-100 text-gray-900'
                 }`}>
-                  <p className="text-sm leading-relaxed">{message.message}</p>
+                  {message.image && (
+                    <img 
+                      src={message.image} 
+                      alt="Uploaded" 
+                      className="rounded-lg mb-2 max-w-full h-auto"
+                    />
+                  )}
+                  <p className="text-sm leading-relaxed whitespace-pre-line">{message.message}</p>
                   <p className={`text-xs mt-1 ${
                     message.type === 'user' ? 'text-blue-100' : 'text-gray-500'
                   }`}>
@@ -378,6 +438,21 @@ const FloatingAIChat = ({ isOpen: externalIsOpen, onOpenChange }: FloatingAIChat
 
         {/* Chat Input */}
         <div className="p-4 border-t bg-white">
+          {selectedImage && (
+            <div className="mb-3 relative inline-block">
+              <img 
+                src={selectedImage} 
+                alt="Selected" 
+                className="rounded-lg max-h-24 border-2 border-blue-500"
+              />
+              <button
+                onClick={() => setSelectedImage(null)}
+                className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center hover:bg-red-600"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+          )}
           <div className="flex items-center space-x-2">
             <Button
               variant="outline"
@@ -387,18 +462,34 @@ const FloatingAIChat = ({ isOpen: externalIsOpen, onOpenChange }: FloatingAIChat
             >
               <Mic className={`w-4 h-4 ${isListening ? 'text-red-600' : 'text-gray-600'}`} />
             </Button>
+
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => fileInputRef.current?.click()}
+              className="hover:bg-blue-50"
+            >
+              <ImageIcon className="w-4 h-4 text-gray-600" />
+            </Button>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              onChange={handleImageUpload}
+              className="hidden"
+            />
             
             <Input
               value={newMessage}
               onChange={(e) => setNewMessage(e.target.value)}
-              placeholder="Ask me anything about farming..."
+              placeholder="Ask me anything or send an image..."
               onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
               className="flex-1"
             />
             
             <Button
               onClick={handleSendMessage}
-              disabled={!newMessage.trim() || isLoading}
+              disabled={(!newMessage.trim() && !selectedImage) || isLoading}
               className="btn-hero px-4"
               data-send-message
             >
