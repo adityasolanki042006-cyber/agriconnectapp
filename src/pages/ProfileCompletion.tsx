@@ -55,12 +55,13 @@ const ProfileCompletion = () => {
         .from('users')
         .select('*')
         .eq('id', user?.id)
-        .single();
+        .maybeSingle();
 
       if (error) throw error;
 
       if (!data) {
-        navigate('/signin');
+        // User profile doesn't exist yet, they need to complete it
+        setLoading(false);
         return;
       }
 
