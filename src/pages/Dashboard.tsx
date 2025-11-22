@@ -20,6 +20,8 @@ interface UserProfile {
   soil_type: string | null;
   major_crops: string[] | null;
   field_size: string | null;
+  annual_income: string | null;
+  credit_score: string | null;
 }
 
 const Dashboard = () => {
@@ -41,12 +43,12 @@ const Dashboard = () => {
 
   const checkProfileCompletion = (profile: UserProfile) => {
     if (profile.user_type === 'farmer') {
-      if (!profile.city || !profile.state || !profile.pincode || !profile.soil_type || !profile.major_crops || !profile.field_size) {
+      if (!profile.city || !profile.state || !profile.pincode || !profile.soil_type || !profile.major_crops || !profile.field_size || !profile.annual_income || !profile.credit_score) {
         navigate('/profile-completion');
         return false;
       }
     } else if (profile.user_type === 'businessman') {
-      if (!profile.city || !profile.state || !profile.pincode) {
+      if (!profile.city || !profile.state || !profile.pincode || !profile.annual_income || !profile.credit_score) {
         navigate('/profile-completion');
         return false;
       }
@@ -234,6 +236,36 @@ const Dashboard = () => {
                   <div>
                     <p className="text-sm text-muted-foreground">Field Size</p>
                     <p className="font-semibold">{profile.field_size}</p>
+                  </div>
+                </div>
+              )}
+
+              {profile.annual_income && (
+                <div className="flex items-start space-x-4">
+                  <svg className="w-5 h-5 text-muted-foreground mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <div>
+                    <p className="text-sm text-muted-foreground">Annual Income</p>
+                    <p className="font-semibold">
+                      {profile.annual_income === 'less-than-25000' && 'Less than ₹25,000'}
+                      {profile.annual_income === '25000-50000' && '₹25,000 - ₹50,000'}
+                      {profile.annual_income === '50000-75000' && '₹50,000 - ₹75,000'}
+                      {profile.annual_income === '75000-100000' && '₹75,000 - ₹1,00,000'}
+                      {profile.annual_income === 'more-than-100000' && 'More than ₹1,00,000'}
+                    </p>
+                  </div>
+                </div>
+              )}
+
+              {profile.credit_score && (
+                <div className="flex items-start space-x-4">
+                  <svg className="w-5 h-5 text-muted-foreground mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
+                  </svg>
+                  <div>
+                    <p className="text-sm text-muted-foreground">Credit Score</p>
+                    <p className="font-semibold">{profile.credit_score}/10</p>
                   </div>
                 </div>
               )}
