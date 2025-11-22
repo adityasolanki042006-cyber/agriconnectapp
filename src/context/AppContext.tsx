@@ -74,7 +74,128 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   const [cart, setCart] = useState<CartItem[]>([]);
   const [orders, setOrders] = useState<Order[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
-  const [vendors, setVendors] = useState<Vendor[]>([]);
+  const [vendors, setVendors] = useState<Vendor[]>([
+    {
+      id: 1,
+      name: "Green Valley Farms",
+      location: "Ludhiana, Punjab",
+      rating: 4.8,
+      crops: ["Wheat", "Rice", "Cotton", "Sugarcane"],
+      contact: "+91 98765 43210",
+      image: "🌾",
+      verified: true
+    },
+    {
+      id: 2,
+      name: "Krishna Agro Industries",
+      location: "Nashik, Maharashtra",
+      rating: 4.6,
+      crops: ["Onions", "Tomatoes", "Grapes", "Pomegranates"],
+      contact: "+91 98234 56789",
+      image: "🍇",
+      verified: true
+    },
+    {
+      id: 3,
+      name: "Sunrise Organic Produce",
+      location: "Mysore, Karnataka",
+      rating: 4.9,
+      crops: ["Coffee", "Cardamom", "Pepper", "Turmeric"],
+      contact: "+91 97654 32109",
+      image: "☕",
+      verified: true
+    },
+    {
+      id: 4,
+      name: "Himalayan Fresh Farms",
+      location: "Shimla, Himachal Pradesh",
+      rating: 4.7,
+      crops: ["Apples", "Pears", "Plums", "Cherries"],
+      contact: "+91 96543 21098",
+      image: "🍎",
+      verified: true
+    },
+    {
+      id: 5,
+      name: "Rajasthan Spice Traders",
+      location: "Jodhpur, Rajasthan",
+      rating: 4.5,
+      crops: ["Cumin", "Coriander", "Chili", "Mustard"],
+      contact: "+91 95432 10987",
+      image: "🌶️",
+      verified: true
+    },
+    {
+      id: 6,
+      name: "Bengal Harvest Co.",
+      location: "Kolkata, West Bengal",
+      rating: 4.8,
+      crops: ["Rice", "Jute", "Potatoes", "Mustard"],
+      contact: "+91 94321 09876",
+      image: "🌾",
+      verified: true
+    },
+    {
+      id: 7,
+      name: "Tamil Nadu Agro Exports",
+      location: "Coimbatore, Tamil Nadu",
+      rating: 4.7,
+      crops: ["Banana", "Coconut", "Turmeric", "Tapioca"],
+      contact: "+91 93210 98765",
+      image: "🥥",
+      verified: true
+    },
+    {
+      id: 8,
+      name: "Madhya Pradesh Pulses Ltd",
+      location: "Indore, Madhya Pradesh",
+      rating: 4.6,
+      crops: ["Soybeans", "Chickpeas", "Lentils", "Black Gram"],
+      contact: "+91 92109 87654",
+      image: "🫘",
+      verified: true
+    },
+    {
+      id: 9,
+      name: "Haryana Dairy & Crops",
+      location: "Karnal, Haryana",
+      rating: 4.9,
+      crops: ["Wheat", "Rice", "Mustard", "Sugarcane"],
+      contact: "+91 91098 76543",
+      image: "🌾",
+      verified: true
+    },
+    {
+      id: 10,
+      name: "Gujarat Cotton Corporation",
+      location: "Ahmedabad, Gujarat",
+      rating: 4.5,
+      crops: ["Cotton", "Groundnut", "Tobacco", "Castor"],
+      contact: "+91 90987 65432",
+      image: "🌱",
+      verified: true
+    },
+    {
+      id: 11,
+      name: "Uttar Pradesh Grains Co.",
+      location: "Meerut, UP",
+      rating: 4.7,
+      crops: ["Wheat", "Rice", "Sugarcane", "Potatoes"],
+      contact: "+91 89876 54321",
+      image: "🌾",
+      verified: true
+    },
+    {
+      id: 12,
+      name: "Assam Tea Plantations",
+      location: "Dibrugarh, Assam",
+      rating: 4.8,
+      crops: ["Tea", "Rice", "Jute", "Bamboo"],
+      contact: "+91 88765 43210",
+      image: "🍵",
+      verified: true
+    }
+  ]);
   const { user } = useAuth();
   const { toast } = useToast();
 
