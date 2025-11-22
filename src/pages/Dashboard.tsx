@@ -120,26 +120,114 @@ const Dashboard = () => {
 
             {/* Bio Section */}
             <div className="mb-8 p-6 bg-muted/50 rounded-lg border border-border">
-              <h3 className="text-lg font-semibold mb-3 flex items-center gap-2">
-                <User className="w-5 h-5 text-primary" />
-                Profile Bio
-              </h3>
-              <p className="text-foreground leading-relaxed">
-                I am <span className="font-semibold">{profile.full_name}</span>, a registered <span className="font-semibold">{profile.user_type}</span> on AgriConnect. 
-                I can be reached at <span className="font-semibold">{profile.email}</span> or via phone at <span className="font-semibold">{profile.phone}</span>. 
-                I am based in <span className="font-semibold">{profile.city}, {profile.state} - {profile.pincode}</span>.
+              <div className="flex items-start gap-6 mb-6">
+                {/* Profile Logo */}
+                <div className="w-24 h-24 rounded-full bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center flex-shrink-0 shadow-lg">
+                  {profile.user_type === 'farmer' ? (
+                    <Sprout className="w-12 h-12 text-white" />
+                  ) : (
+                    <Briefcase className="w-12 h-12 text-white" />
+                  )}
+                </div>
+                
+                {/* Bio Header */}
+                <div className="flex-1">
+                  <h3 className="text-2xl font-bold mb-1">{profile.full_name}</h3>
+                  <p className="text-lg text-muted-foreground capitalize mb-2">{profile.user_type}</p>
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                    <Calendar className="w-4 h-4" />
+                    <span>Member since {new Date(profile.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'long' })}</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Bio Information - Line by Line */}
+              <div className="space-y-3 pl-2 border-l-4 border-primary/30 ml-2">
+                <div className="flex items-center gap-3">
+                  <Mail className="w-5 h-5 text-primary flex-shrink-0" />
+                  <div>
+                    <span className="text-sm text-muted-foreground">Email: </span>
+                    <span className="font-medium">{profile.email}</span>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-3">
+                  <Phone className="w-5 h-5 text-primary flex-shrink-0" />
+                  <div>
+                    <span className="text-sm text-muted-foreground">Phone: </span>
+                    <span className="font-medium">{profile.phone}</span>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-3">
+                  <svg className="w-5 h-5 text-primary flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                  </svg>
+                  <div>
+                    <span className="text-sm text-muted-foreground">Location: </span>
+                    <span className="font-medium">{profile.city}, {profile.state} - {profile.pincode}</span>
+                  </div>
+                </div>
+
                 {profile.user_type === 'farmer' && profile.field_size && (
-                  <> I manage a field of approximately <span className="font-semibold">{profile.field_size}</span> with <span className="font-semibold">{profile.soil_type}</span> soil type. My primary crops include <span className="font-semibold">{profile.major_crops?.join(', ')}</span>.</>
+                  <>
+                    <div className="flex items-center gap-3">
+                      <svg className="w-5 h-5 text-primary flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0h4M4 4l5 5m11-5h-4m4 0v4m0-4l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5v-4m0 4h-4m4 0l-5-5" />
+                      </svg>
+                      <div>
+                        <span className="text-sm text-muted-foreground">Field Size: </span>
+                        <span className="font-medium">{profile.field_size}</span>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-3">
+                      <svg className="w-5 h-5 text-primary flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 21h18M3 7v1a3 3 0 003 3h12a3 3 0 003-3V7m-18 0V5a2 2 0 012-2h14a2 2 0 012 2v2M3 7h18" />
+                      </svg>
+                      <div>
+                        <span className="text-sm text-muted-foreground">Soil Type: </span>
+                        <span className="font-medium">{profile.soil_type}</span>
+                      </div>
+                    </div>
+
+                    <div className="flex items-start gap-3">
+                      <Sprout className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
+                      <div>
+                        <span className="text-sm text-muted-foreground">Major Crops: </span>
+                        <span className="font-medium">{profile.major_crops?.join(', ')}</span>
+                      </div>
+                    </div>
+                  </>
                 )}
-                {' '}My annual income falls in the <span className="font-semibold">
-                  {profile.annual_income === 'less-than-25000' && 'less than ₹25,000'}
-                  {profile.annual_income === '25000-50000' && '₹25,000 - ₹50,000'}
-                  {profile.annual_income === '50000-75000' && '₹50,000 - ₹75,000'}
-                  {profile.annual_income === '75000-100000' && '₹75,000 - ₹1,00,000'}
-                  {profile.annual_income === 'more-than-100000' && 'more than ₹1,00,000'}
-                </span> range, and I have a credit score of <span className="font-semibold">{profile.credit_score}/10</span>. 
-                I joined AgriConnect on <span className="font-semibold">{new Date(profile.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</span>.
-              </p>
+
+                <div className="flex items-center gap-3">
+                  <svg className="w-5 h-5 text-primary flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <div>
+                    <span className="text-sm text-muted-foreground">Annual Income: </span>
+                    <span className="font-medium">
+                      {profile.annual_income === 'less-than-25000' && 'Less than ₹25,000'}
+                      {profile.annual_income === '25000-50000' && '₹25,000 - ₹50,000'}
+                      {profile.annual_income === '50000-75000' && '₹50,000 - ₹75,000'}
+                      {profile.annual_income === '75000-100000' && '₹75,000 - ₹1,00,000'}
+                      {profile.annual_income === 'more-than-100000' && 'More than ₹1,00,000'}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-3">
+                  <svg className="w-5 h-5 text-primary flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
+                  </svg>
+                  <div>
+                    <span className="text-sm text-muted-foreground">Credit Score: </span>
+                    <span className="font-medium">{profile.credit_score}/10</span>
+                  </div>
+                </div>
+              </div>
             </div>
 
             <div className="space-y-6">
