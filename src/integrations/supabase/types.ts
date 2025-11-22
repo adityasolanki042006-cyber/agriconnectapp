@@ -296,8 +296,10 @@ export type Database = {
       }
       users: {
         Row: {
+          annual_income: string | null
           city: string | null
           created_at: string
+          credit_score: string | null
           email: string
           field_size: string | null
           full_name: string
@@ -311,8 +313,10 @@ export type Database = {
           user_type: string
         }
         Insert: {
+          annual_income?: string | null
           city?: string | null
           created_at?: string
+          credit_score?: string | null
           email: string
           field_size?: string | null
           full_name: string
@@ -326,8 +330,10 @@ export type Database = {
           user_type: string
         }
         Update: {
+          annual_income?: string | null
           city?: string | null
           created_at?: string
+          credit_score?: string | null
           email?: string
           field_size?: string | null
           full_name?: string

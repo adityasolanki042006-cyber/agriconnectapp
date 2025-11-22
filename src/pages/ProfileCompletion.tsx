@@ -6,6 +6,7 @@ import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Loader2, Sprout, Briefcase } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import Navigation from '@/components/Navigation';
@@ -25,12 +26,16 @@ const ProfileCompletion = () => {
     soil_type: '',
     major_crops: '',
     field_size: '',
+    annual_income: '',
+    credit_score: '',
   });
 
   const [businessmanData, setBusinessmanData] = useState({
     city: '',
     state: '',
     pincode: '',
+    annual_income: '',
+    credit_score: '',
   });
 
   useEffect(() => {
@@ -63,12 +68,12 @@ const ProfileCompletion = () => {
 
       // Check if profile is already complete
       if (data.user_type === 'farmer') {
-        if (data.city && data.state && data.pincode && data.soil_type && data.major_crops && data.field_size) {
+        if (data.city && data.state && data.pincode && data.soil_type && data.major_crops && data.field_size && data.annual_income && data.credit_score) {
           navigate('/dashboard');
           return;
         }
       } else if (data.user_type === 'businessman') {
-        if (data.city && data.state && data.pincode) {
+        if (data.city && data.state && data.pincode && data.annual_income && data.credit_score) {
           navigate('/dashboard');
           return;
         }
@@ -88,7 +93,7 @@ const ProfileCompletion = () => {
   const handleFarmerSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!farmerData.city || !farmerData.state || !farmerData.pincode || !farmerData.soil_type || !farmerData.major_crops || !farmerData.field_size) {
+    if (!farmerData.city || !farmerData.state || !farmerData.pincode || !farmerData.soil_type || !farmerData.major_crops || !farmerData.field_size || !farmerData.annual_income || !farmerData.credit_score) {
       toast({
         title: 'Incomplete Form',
         description: 'Please fill in all fields',
@@ -111,6 +116,8 @@ const ProfileCompletion = () => {
           soil_type: farmerData.soil_type,
           major_crops: cropsArray,
           field_size: farmerData.field_size,
+          annual_income: farmerData.annual_income,
+          credit_score: farmerData.credit_score,
         })
         .eq('id', user?.id);
 
@@ -137,7 +144,7 @@ const ProfileCompletion = () => {
   const handleBusinessmanSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!businessmanData.city || !businessmanData.state || !businessmanData.pincode) {
+    if (!businessmanData.city || !businessmanData.state || !businessmanData.pincode || !businessmanData.annual_income || !businessmanData.credit_score) {
       toast({
         title: 'Incomplete Form',
         description: 'Please fill in all fields',
@@ -155,6 +162,8 @@ const ProfileCompletion = () => {
           city: businessmanData.city,
           state: businessmanData.state,
           pincode: businessmanData.pincode,
+          annual_income: businessmanData.annual_income,
+          credit_score: businessmanData.credit_score,
         })
         .eq('id', user?.id);
 
@@ -291,6 +300,48 @@ const ProfileCompletion = () => {
                   />
                 </div>
 
+                <div className="space-y-2">
+                  <Label htmlFor="annual_income">Annual Income</Label>
+                  <Select
+                    value={farmerData.annual_income}
+                    onValueChange={(value) => setFarmerData({ ...farmerData, annual_income: value })}
+                    disabled={submitting}
+                    required
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select income range" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="less-than-25000">Less than ₹25,000</SelectItem>
+                      <SelectItem value="25000-50000">₹25,000 - ₹50,000</SelectItem>
+                      <SelectItem value="50000-75000">₹50,000 - ₹75,000</SelectItem>
+                      <SelectItem value="75000-100000">₹75,000 - ₹1,00,000</SelectItem>
+                      <SelectItem value="more-than-100000">More than ₹1,00,000</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="credit_score">Credit Score</Label>
+                  <Select
+                    value={farmerData.credit_score}
+                    onValueChange={(value) => setFarmerData({ ...farmerData, credit_score: value })}
+                    disabled={submitting}
+                    required
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select credit score (1-10)" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((score) => (
+                        <SelectItem key={score} value={score.toString()}>
+                          {score}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
                 <Button type="submit" className="w-full" disabled={submitting}>
                   {submitting ? (
                     <>
@@ -343,6 +394,48 @@ const ProfileCompletion = () => {
                     disabled={submitting}
                     required
                   />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="annual_income">Annual Income</Label>
+                  <Select
+                    value={businessmanData.annual_income}
+                    onValueChange={(value) => setBusinessmanData({ ...businessmanData, annual_income: value })}
+                    disabled={submitting}
+                    required
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select income range" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="less-than-25000">Less than ₹25,000</SelectItem>
+                      <SelectItem value="25000-50000">₹25,000 - ₹50,000</SelectItem>
+                      <SelectItem value="50000-75000">₹50,000 - ₹75,000</SelectItem>
+                      <SelectItem value="75000-100000">₹75,000 - ₹1,00,000</SelectItem>
+                      <SelectItem value="more-than-100000">More than ₹1,00,000</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="credit_score">Credit Score</Label>
+                  <Select
+                    value={businessmanData.credit_score}
+                    onValueChange={(value) => setBusinessmanData({ ...businessmanData, credit_score: value })}
+                    disabled={submitting}
+                    required
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select credit score (1-10)" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((score) => (
+                        <SelectItem key={score} value={score.toString()}>
+                          {score}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
 
                 <Button type="submit" className="w-full" disabled={submitting}>
