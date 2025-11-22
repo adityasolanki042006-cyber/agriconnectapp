@@ -69,12 +69,6 @@ const Navigation = () => {
           <div className="hidden md:flex items-center space-x-2">
             {user ? (
               <>
-                <Button 
-                  onClick={() => handleNavigation('/dashboard')}
-                  variant="ghost"
-                >
-                  Dashboard
-                </Button>
                 {user.email === 'admin@agriconnect.com' && (
                   <Button 
                     onClick={() => handleNavigation('/admin')}
@@ -136,12 +130,6 @@ const Navigation = () => {
             ))}
             {user ? (
               <>
-                <button
-                  onClick={() => handleNavigation('/dashboard')}
-                  className="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-foreground hover:text-primary hover:bg-muted transition-smooth"
-                >
-                  Dashboard
-                </button>
                 {user.email === 'admin@agriconnect.com' && (
                   <button
                     onClick={() => handleNavigation('/admin')}
