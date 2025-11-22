@@ -108,9 +108,15 @@ const ProfileCompletion = () => {
     try {
       const cropsArray = farmerData.major_crops.split(',').map(crop => crop.trim()).filter(crop => crop);
 
+      // Use upsert to insert or update
       const { error } = await supabase
         .from('users')
-        .update({
+        .upsert({
+          id: user?.id,
+          full_name: user?.user_metadata?.full_name || '',
+          email: user?.email || '',
+          phone: user?.user_metadata?.phone || '',
+          user_type: user?.user_metadata?.user_type || 'farmer',
           city: farmerData.city,
           state: farmerData.state,
           pincode: farmerData.pincode,
@@ -119,8 +125,9 @@ const ProfileCompletion = () => {
           field_size: farmerData.field_size,
           annual_income: farmerData.annual_income,
           credit_score: farmerData.credit_score,
-        })
-        .eq('id', user?.id);
+        }, {
+          onConflict: 'id'
+        });
 
       if (error) throw error;
 
@@ -157,16 +164,23 @@ const ProfileCompletion = () => {
     setSubmitting(true);
 
     try {
+      // Use upsert to insert or update
       const { error } = await supabase
         .from('users')
-        .update({
+        .upsert({
+          id: user?.id,
+          full_name: user?.user_metadata?.full_name || '',
+          email: user?.email || '',
+          phone: user?.user_metadata?.phone || '',
+          user_type: user?.user_metadata?.user_type || 'businessman',
           city: businessmanData.city,
           state: businessmanData.state,
           pincode: businessmanData.pincode,
           annual_income: businessmanData.annual_income,
           credit_score: businessmanData.credit_score,
-        })
-        .eq('id', user?.id);
+        }, {
+          onConflict: 'id'
+        });
 
       if (error) throw error;
 
