@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AppProvider } from "./context/AppContext";
 import { AuthProvider } from "./context/AuthContext";
+import { LanguageProvider } from "./context/LanguageContext";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Index from "./pages/Index";
 import Marketplace from "./pages/Marketplace";
@@ -31,10 +32,11 @@ const App = () => (
     <TooltipProvider>
       <Toaster />
       <Sonner />
-      <AuthProvider>
-        <AppProvider>
-          <BrowserRouter>
-          <Routes>
+      <LanguageProvider>
+        <AuthProvider>
+          <AppProvider>
+            <BrowserRouter>
+            <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/marketplace" element={<Marketplace />} />
             <Route path="/orders" element={<ProtectedRoute><Orders /></ProtectedRoute>} />
@@ -52,10 +54,11 @@ const App = () => (
             <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
             <Route path="/admin" element={<ProtectedRoute><Admin /></ProtectedRoute>} />
             <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
-        </AppProvider>
-      </AuthProvider>
+            </Routes>
+          </BrowserRouter>
+          </AppProvider>
+        </AuthProvider>
+      </LanguageProvider>
       </TooltipProvider>
   </QueryClientProvider>
 );

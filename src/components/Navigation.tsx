@@ -3,22 +3,25 @@ import { Menu, X, Sprout, LogOut } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/context/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import { useLanguage } from '@/context/LanguageContext';
+import LanguageSwitcher from '@/components/LanguageSwitcher';
 
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
+  const { t } = useLanguage();
 
   const navItems = [
-    { name: 'Home', href: '/' },
-    { name: 'Marketplace', href: '/marketplace' },
-    { name: 'Orders', href: '/orders' },
-    { name: 'Order History', href: '/order-history' },
-    { name: 'Vendors', href: '/vendors' },
-    { name: 'Fertilizer Friend', href: '/fertilizer' },
-    { name: 'Search', href: '/search' },
-    { name: 'About Us', href: '/about' },
-    { name: 'Bio', href: '/dashboard' },
+    { name: t('nav.home'), href: '/' },
+    { name: t('nav.marketplace'), href: '/marketplace' },
+    { name: t('nav.orders'), href: '/orders' },
+    { name: t('nav.orderHistory'), href: '/order-history' },
+    { name: t('nav.vendors'), href: '/vendors' },
+    { name: t('nav.fertilizer'), href: '/fertilizer' },
+    { name: t('nav.search'), href: '/search' },
+    { name: t('nav.about'), href: '/about' },
+    { name: t('nav.bio'), href: '/dashboard' },
   ];
 
   const handleNavigation = (href: string) => {
@@ -68,6 +71,7 @@ const Navigation = () => {
 
           {/* CTA Buttons */}
           <div className="hidden md:flex items-center space-x-2">
+            <LanguageSwitcher />
             {user ? (
               <>
                 {user.email === 'admin@agriconnect.com' && (
@@ -75,7 +79,7 @@ const Navigation = () => {
                     onClick={() => handleNavigation('/admin')}
                     variant="outline"
                   >
-                    Admin
+                    {t('nav.admin')}
                   </Button>
                 )}
                 <Button 
@@ -83,7 +87,7 @@ const Navigation = () => {
                   variant="ghost"
                 >
                   <LogOut className="w-4 h-4 mr-2" />
-                  Logout
+                  {t('nav.logout')}
                 </Button>
               </>
             ) : (
@@ -92,13 +96,13 @@ const Navigation = () => {
                   onClick={() => handleNavigation('/signin')}
                   variant="ghost"
                 >
-                  Sign In
+                  {t('nav.signIn')}
                 </Button>
                 <Button 
                   onClick={() => handleNavigation('/usertype')}
                   className="btn-hero"
                 >
-                  Register
+                  {t('nav.register')}
                 </Button>
               </>
             )}
@@ -120,6 +124,9 @@ const Navigation = () => {
       {isOpen && (
         <div className="md:hidden bg-background border-t border-border">
           <div className="px-2 pt-2 pb-3 space-y-1">
+            <div className="px-3 py-2">
+              <LanguageSwitcher />
+            </div>
             {navItems.map((item) => (
               <button
                 key={item.name}
@@ -136,14 +143,14 @@ const Navigation = () => {
                     onClick={() => handleNavigation('/admin')}
                     className="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-foreground hover:text-primary hover:bg-muted transition-smooth"
                   >
-                    Admin Dashboard
+                    {t('nav.admin')}
                   </button>
                 )}
                 <button
                   onClick={handleSignOut}
                   className="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-foreground hover:text-primary hover:bg-muted transition-smooth"
                 >
-                  Logout
+                  {t('nav.logout')}
                 </button>
               </>
             ) : (
@@ -153,13 +160,13 @@ const Navigation = () => {
                   variant="ghost"
                   className="w-full"
                 >
-                  Sign In
+                  {t('nav.signIn')}
                 </Button>
                 <Button 
                   onClick={() => handleNavigation('/usertype')}
                   className="btn-hero w-full"
                 >
-                  Register
+                  {t('nav.register')}
                 </Button>
               </div>
             )}
