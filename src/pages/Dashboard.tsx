@@ -118,6 +118,30 @@ const Dashboard = () => {
               </div>
             </div>
 
+            {/* Bio Section */}
+            <div className="mb-8 p-6 bg-muted/50 rounded-lg border border-border">
+              <h3 className="text-lg font-semibold mb-3 flex items-center gap-2">
+                <User className="w-5 h-5 text-primary" />
+                Profile Bio
+              </h3>
+              <p className="text-foreground leading-relaxed">
+                I am <span className="font-semibold">{profile.full_name}</span>, a registered <span className="font-semibold">{profile.user_type}</span> on AgriConnect. 
+                I can be reached at <span className="font-semibold">{profile.email}</span> or via phone at <span className="font-semibold">{profile.phone}</span>. 
+                I am based in <span className="font-semibold">{profile.city}, {profile.state} - {profile.pincode}</span>.
+                {profile.user_type === 'farmer' && profile.field_size && (
+                  <> I manage a field of approximately <span className="font-semibold">{profile.field_size}</span> with <span className="font-semibold">{profile.soil_type}</span> soil type. My primary crops include <span className="font-semibold">{profile.major_crops?.join(', ')}</span>.</>
+                )}
+                {' '}My annual income falls in the <span className="font-semibold">
+                  {profile.annual_income === 'less-than-25000' && 'less than ₹25,000'}
+                  {profile.annual_income === '25000-50000' && '₹25,000 - ₹50,000'}
+                  {profile.annual_income === '50000-75000' && '₹50,000 - ₹75,000'}
+                  {profile.annual_income === '75000-100000' && '₹75,000 - ₹1,00,000'}
+                  {profile.annual_income === 'more-than-100000' && 'more than ₹1,00,000'}
+                </span> range, and I have a credit score of <span className="font-semibold">{profile.credit_score}/10</span>. 
+                I joined AgriConnect on <span className="font-semibold">{new Date(profile.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</span>.
+              </p>
+            </div>
+
             <div className="space-y-6">
               <div className="flex items-start space-x-4">
                 <User className="w-5 h-5 text-muted-foreground mt-0.5" />
