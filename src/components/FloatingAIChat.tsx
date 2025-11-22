@@ -8,6 +8,7 @@ import { useAuth } from '@/context/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 interface ChatMessage {
   id: number;
@@ -26,6 +27,7 @@ const FloatingAIChat = ({ isOpen: externalIsOpen, onOpenChange }: FloatingAIChat
   const { toast } = useToast();
   const navigate = useNavigate();
   const { session } = useAuth();
+  const { t, i18n } = useTranslation();
   const [internalIsOpen, setInternalIsOpen] = useState(false);
   
   const isOpen = externalIsOpen !== undefined ? externalIsOpen : internalIsOpen;
@@ -40,7 +42,7 @@ const FloatingAIChat = ({ isOpen: externalIsOpen, onOpenChange }: FloatingAIChat
     {
       id: 1,
       type: 'bot',
-      message: 'Hello! I\'m AgriConnect AI, your intelligent assistant. I can help you with anything you need:\n\n💬 **General Questions**: Ask me about science, history, technology, math, culture, or any topic!\n🌾 **Agricultural Expertise**: Crop advice, fertilizers, farming practices\n🛍️ **Marketplace**: Product prices, availability, recommendations\n📦 **Orders & Cart**: Track orders, check cart, manage purchases\n🌤️ **Weather**: Real-time conditions for any location\n💰 **Market Prices**: Current crop and commodity rates\n📷 **Image Analysis**: Send me photos and I\'ll analyze them (like Google Lens)!\n\nI can answer ANY question - from farming tips to general knowledge. Just ask or send an image!',
+      message: t('chat.welcome'),
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
     }
   ]);
@@ -217,7 +219,10 @@ const FloatingAIChat = ({ isOpen: externalIsOpen, onOpenChange }: FloatingAIChat
 
       // Call the Gemini edge function with auth header if user is logged in
       const { data, error } = await supabase.functions.invoke('chat-with-gemini', {
-        body: { messages: conversationHistory },
+        body: { 
+          messages: conversationHistory,
+          language: i18n.language // Pass current language
+        },
         headers: session?.access_token ? {
           Authorization: `Bearer ${session.access_token}`
         } : undefined
@@ -422,22 +427,28 @@ const FloatingAIChat = ({ isOpen: externalIsOpen, onOpenChange }: FloatingAIChat
         <div className="px-4 py-2 border-t bg-gray-50">
           <div className="flex flex-wrap gap-2">
             <button
-              onClick={() => setNewMessage("Check my cart")}
+              onClick={() => setNewMessage(t('chat.weatherQuery'))}
               className="text-xs bg-white border border-gray-200 rounded-full px-3 py-1 hover:bg-blue-50 transition-colors"
             >
-              Check Cart
+              {t('chat.weatherQuery')}
             </button>
             <button
-              onClick={() => setNewMessage("Track my orders")}
+              onClick={() => setNewMessage(t('chat.wheatPrice'))}
               className="text-xs bg-white border border-gray-200 rounded-full px-3 py-1 hover:bg-blue-50 transition-colors"
             >
-              Track Orders
+              {t('chat.wheatPrice')}
             </button>
             <button
-              onClick={() => setNewMessage("Today's crop prices")}
+              onClick={() => setNewMessage(t('chat.trackOrder'))}
               className="text-xs bg-white border border-gray-200 rounded-full px-3 py-1 hover:bg-blue-50 transition-colors"
             >
-              Crop Prices
+              {t('chat.trackOrder')}
+            </button>
+            <button
+              onClick={() => setNewMessage(t('chat.cropAdvice'))}
+              className="text-xs bg-white border border-gray-200 rounded-full px-3 py-1 hover:bg-blue-50 transition-colors"
+            >
+              {t('chat.cropAdvice')}
             </button>
           </div>
         </div>
@@ -488,7 +499,7 @@ const FloatingAIChat = ({ isOpen: externalIsOpen, onOpenChange }: FloatingAIChat
             <Input
               value={newMessage}
               onChange={(e) => setNewMessage(e.target.value)}
-              placeholder="Ask me anything or send an image..."
+              placeholder={t('chat.typePlaceholder')}
               onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
               className="flex-1"
             />

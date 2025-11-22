@@ -12,7 +12,7 @@ serve(async (req) => {
   }
 
   try {
-    const { messages } = await req.json();
+    const { messages, language = 'en' } = await req.json();
     
     if (!messages || !Array.isArray(messages)) {
       return new Response(
@@ -154,8 +154,30 @@ serve(async (req) => {
       ]
     };
 
-    // System instruction for Gemini
+    // System instruction for Gemini with language support
+    const languageInstructions: Record<string, string> = {
+      'en': 'RESPOND IN ENGLISH.',
+      'hi': 'हिंदी में उत्तर दें। RESPOND IN HINDI.',
+      'ta': 'தமிழில் பதிலளிக்கவும். RESPOND IN TAMIL.',
+      'te': 'తెలుగులో సమాధానం ఇవ్వండి। RESPOND IN TELUGU.',
+      'mr': 'मराठीत उत्तर द्या। RESPOND IN MARATHI.',
+      'bn': 'বাংলায় উত্তর দিন। RESPOND IN BENGALI.',
+      'gu': 'ગુજરાતીમાં જવાબ આપો। RESPOND IN GUJARATI.',
+      'kn': 'ಕನ್ನಡದಲ್ಲಿ ಉತ್ತರಿಸಿ। RESPOND IN KANNADA.',
+      'ml': 'മലയാളത്തിൽ ഉത്തരം നൽകുക। RESPOND IN MALAYALAM.',
+      'pa': 'ਪੰਜਾਬੀ ਵਿੱਚ ਜਵਾਬ ਦਿਓ। RESPOND IN PUNJABI.',
+      'es': 'RESPONDE EN ESPAÑOL. RESPOND IN SPANISH.',
+      'fr': 'RÉPONDEZ EN FRANÇAIS. RESPOND IN FRENCH.',
+      'de': 'ANTWORTEN SIE AUF DEUTSCH. RESPOND IN GERMAN.'
+    };
+
+    const languageInstruction = languageInstructions[language] || languageInstructions['en'];
+
     const systemInstruction = `You are AgriConnect AI, a helpful and versatile AI assistant with access to real-time information.
+
+**CRITICAL: LANGUAGE REQUIREMENT**
+${languageInstruction}
+You MUST respond in the user's selected language at all times.
 
 **YOUR CAPABILITIES:**
 - General Knowledge: Answer ANY question about science, history, technology, culture, entertainment, education, etc.
@@ -180,7 +202,8 @@ serve(async (req) => {
 4. For current events, news, recent data, ALWAYS use web_search
 5. Be conversational, friendly, and helpful
 6. Provide accurate, well-informed responses using real-time data when available
-7. If you don't know something and no tool is available, be honest about it`;
+7. If you don't know something and no tool is available, be honest about it
+8. REMEMBER: Always respond in the user's selected language (${language})`;
 
     // Convert messages to Gemini format
     const geminiContents = normalizedMessages.map((msg: any) => {

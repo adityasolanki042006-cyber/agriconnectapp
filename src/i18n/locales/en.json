@@ -15,10 +15,21 @@
     "admin": "Admin"
   },
   "hero": {
-    "title": "Connecting Farmers with Markets",
-    "subtitle": "Bridging the gap between rural farmers and urban markets through technology",
-    "cta": "Get Started",
-    "learnMore": "Learn More"
+    "badge": "India's #1 Farming Super-App",
+    "title": "AgriConnect",
+    "subtitle": "Connecting Farmers to the Future",
+    "description": "Bridge the gap between farmers and markets. Get the right price for your crops, access fertilizers directly, and fight inflation with our AI-powered platform.",
+    "exploreMarketplace": "Explore Marketplace",
+    "talkToAI": "Talk to AI Assistant",
+    "features": "Features",
+    "farmers": "Farmers",
+    "transactions": "Transactions",
+    "liveMarketPrice": "Live Market Price",
+    "tomato": "Tomato",
+    "fromLastWeek": "from last week",
+    "aiRecommendation": "AI Recommendation",
+    "bestTimeToSell": "Best time to sell wheat",
+    "highDemand": "High demand in Delhi NCR"
   },
   "problem": {
     "title": "The Challenge",
@@ -53,6 +64,18 @@
     "contact": "Contact",
     "privacy": "Privacy Policy",
     "terms": "Terms of Service"
+  },
+  "chat": {
+    "welcome": "Hello! I'm AgriConnect AI, your intelligent assistant. I can help you with anything you need:\n\n💬 **General Questions**: Ask me about science, history, technology, math, culture, or any topic!\n🌾 **Agricultural Expertise**: Crop advice, fertilizers, farming practices\n🛍️ **Marketplace**: Product prices, availability, recommendations\n📦 **Orders & Cart**: Track orders, check cart, manage purchases\n🌤️ **Weather**: Real-time conditions for any location\n💰 **Market Prices**: Current crop and commodity rates\n📷 **Image Analysis**: Send me photos and I'll analyze them (like Google Lens)!\n\nI can answer ANY question - from farming tips to general knowledge. Just ask or send an image!",
+    "typePlaceholder": "Type your message...",
+    "sendMessage": "Send message",
+    "voiceInput": "Voice input",
+    "uploadImage": "Upload image",
+    "quickQuestions": "Quick Questions",
+    "weatherQuery": "What's the weather today?",
+    "wheatPrice": "What's the price of wheat?",
+    "trackOrder": "Track my order",
+    "cropAdvice": "Suggest crops for my soil"
   },
   "common": {
     "loading": "Loading...",
