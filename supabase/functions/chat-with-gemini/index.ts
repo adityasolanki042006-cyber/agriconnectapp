@@ -21,6 +21,19 @@ serve(async (req) => {
       );
     }
 
+    // Normalize messages to handle both string content and array content (for images)
+    const normalizedMessages = messages.map((msg: any) => {
+      // If content is already an array (contains text + image), keep it as is
+      if (Array.isArray(msg.content)) {
+        return msg;
+      }
+      // Otherwise, wrap string content in standard format
+      return {
+        ...msg,
+        content: msg.content
+      };
+    });
+
     const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
     if (!LOVABLE_API_KEY) {
       return new Response(
@@ -189,7 +202,7 @@ serve(async (req) => {
     };
 
     // Conversation loop to handle tool calls
-    const conversationMessages = [systemMessage, ...messages];
+    const conversationMessages = [systemMessage, ...normalizedMessages];
     let navigationAction = null;
     let iterations = 0;
     const maxIterations = 10;
