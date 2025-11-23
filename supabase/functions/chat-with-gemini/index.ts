@@ -21,21 +21,8 @@ serve(async (req) => {
       );
     }
 
-    // Normalize messages to handle both string content and array content (for images)
-    const normalizedMessages = messages.map((msg: any) => {
-      // If content is already an array (contains text + image), keep it as is
-      if (Array.isArray(msg.content)) {
-        return msg;
-      }
-      // Otherwise, wrap string content in standard format
-      return {
-        ...msg,
-        content: msg.content
-      };
-    });
-
-    const GOOGLE_GEMINI_API_KEY = Deno.env.get('GOOGLE_GEMINI_API_KEY');
-    if (!GOOGLE_GEMINI_API_KEY) {
+    const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
+    if (!LOVABLE_API_KEY) {
       return new Response(
         JSON.stringify({ error: 'AI service not configured' }), 
         { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
@@ -62,10 +49,11 @@ serve(async (req) => {
 
     console.log('Processing chat with', messages.length, 'messages', isAuthenticated ? '(authenticated)' : '(guest)');
 
-    // Define tools for real-time data access (Gemini format)
-    const tools = {
-      function_declarations: [
-        {
+    // Define tools for real-time data access (OpenAI format)
+    const tools = [
+      {
+        type: "function",
+        function: {
           name: "get_weather",
           description: "Get real-time weather information for any location including temperature, conditions, humidity, wind speed, and forecast.",
           parameters: {
@@ -78,8 +66,11 @@ serve(async (req) => {
             },
             required: ["location"]
           }
-        },
-        {
+        }
+      },
+      {
+        type: "function",
+        function: {
           name: "search_market_prices",
           description: "Search for current market prices, commodity rates, agricultural product prices, stock prices, or any market-related information in real-time.",
           parameters: {
@@ -92,8 +83,11 @@ serve(async (req) => {
             },
             required: ["query"]
           }
-        },
-        {
+        }
+      },
+      {
+        type: "function",
+        function: {
           name: "web_search",
           description: "Search the web for current information, news, facts, or any real-time data. Use this for questions about recent events, current data, or information not in your training.",
           parameters: {
@@ -106,8 +100,11 @@ serve(async (req) => {
             },
             required: ["query"]
           }
-        },
-        {
+        }
+      },
+      {
+        type: "function",
+        function: {
           name: "query_products",
           description: "Search products in the AgriConnect marketplace database.",
           parameters: {
@@ -123,8 +120,11 @@ serve(async (req) => {
               }
             }
           }
-        },
-        {
+        }
+      },
+      {
+        type: "function",
+        function: {
           name: "query_orders",
           description: "Get user's order information. Requires user to be logged in.",
           parameters: {
@@ -136,8 +136,11 @@ serve(async (req) => {
               }
             }
           }
-        },
-        {
+        }
+      },
+      {
+        type: "function",
+        function: {
           name: "navigate_to",
           description: "Navigate user to a specific page on the website.",
           parameters: {
@@ -151,10 +154,10 @@ serve(async (req) => {
             required: ["route"]
           }
         }
-      ]
-    };
+      }
+    ];
 
-    // System instruction for Gemini with language support
+    // System instruction with language support
     const languageInstructions: Record<string, string> = {
       'en': 'RESPOND IN ENGLISH.',
       'hi': 'हिंदी में उत्तर दें। RESPOND IN HINDI.',
@@ -205,54 +208,20 @@ You MUST respond in the user's selected language at all times.
 7. If you don't know something and no tool is available, be honest about it
 8. REMEMBER: Always respond in the user's selected language (${language})`;
 
-    // Convert messages to Gemini format
-    const geminiContents = normalizedMessages.map((msg: any) => {
-      if (msg.role === 'user') {
-        if (Array.isArray(msg.content)) {
-          // Handle multimodal content (text + image)
+    // Convert messages to OpenAI format
+    const openaiMessages = [
+      { role: 'system', content: systemInstruction },
+      ...messages.map((msg: any) => {
+        if (msg.role === 'tool') {
           return {
-            role: 'user',
-            parts: msg.content.map((part: any) => {
-              if (part.type === 'text') {
-                return { text: part.text };
-              } else if (part.type === 'image_url') {
-                // Extract base64 data from data URL
-                const base64Data = part.image_url.url.split(',')[1];
-                const mimeType = part.image_url.url.split(';')[0].split(':')[1];
-                return {
-                  inline_data: {
-                    mime_type: mimeType,
-                    data: base64Data
-                  }
-                };
-              }
-              return { text: String(part) };
-            })
+            role: 'tool',
+            tool_call_id: msg.tool_call_id,
+            content: msg.content
           };
         }
-        return {
-          role: 'user',
-          parts: [{ text: msg.content }]
-        };
-      } else if (msg.role === 'assistant') {
-        return {
-          role: 'model',
-          parts: [{ text: msg.content }]
-        };
-      } else if (msg.role === 'function' || msg.role === 'tool') {
-        // Function results
-        return {
-          role: 'function',
-          parts: [{
-            functionResponse: {
-              name: msg.name || 'function_result',
-              response: JSON.parse(msg.content)
-            }
-          }]
-        };
-      }
-      return { role: 'user', parts: [{ text: String(msg.content) }] };
-    });
+        return msg;
+      })
+    ];
 
     let navigationAction = null;
     let iterations = 0;
@@ -263,20 +232,19 @@ You MUST respond in the user's selected language at all times.
       console.log(`Iteration ${iterations}`);
 
       const requestBody = {
-        contents: geminiContents,
-        systemInstruction: { parts: [{ text: systemInstruction }] },
-        tools: [tools],
-        generationConfig: {
-          temperature: 0.7,
-          maxOutputTokens: 2000,
-        }
+        model: 'google/gemini-2.5-flash',
+        messages: openaiMessages,
+        tools: tools,
+        temperature: 0.7,
+        max_tokens: 2000,
       };
 
       const response = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GOOGLE_GEMINI_API_KEY}`,
+        'https://ai.gateway.lovable.dev/v1/chat/completions',
         {
           method: 'POST',
           headers: {
+            'Authorization': `Bearer ${LOVABLE_API_KEY}`,
             'Content-Type': 'application/json',
           },
           body: JSON.stringify(requestBody),
@@ -285,7 +253,7 @@ You MUST respond in the user's selected language at all times.
 
       if (!response.ok) {
         const errorText = await response.text();
-        console.error('Google Gemini API error:', response.status, errorText);
+        console.error('Lovable AI API error:', response.status, errorText);
         
         if (response.status === 429) {
           return new Response(
@@ -294,51 +262,42 @@ You MUST respond in the user's selected language at all times.
           );
         }
         
-        if (response.status === 403) {
+        if (response.status === 402) {
           return new Response(
-            JSON.stringify({ error: 'Google Gemini API key invalid or quota exceeded. Please check your API key.' }), 
-            { status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+            JSON.stringify({ error: 'Payment required. Please add credits to your workspace.' }), 
+            { status: 402, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
           );
         }
         
         return new Response(
-          JSON.stringify({ error: 'Failed to get AI response from Google Gemini' }), 
+          JSON.stringify({ error: 'Failed to get AI response' }), 
           { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
         );
       }
 
       const data = await response.json();
-      const candidate = data.candidates?.[0];
+      const choice = data.choices?.[0];
       
-      if (!candidate) {
+      if (!choice) {
         return new Response(
           JSON.stringify({ error: 'No response from AI' }), 
           { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
         );
       }
 
-      const content = candidate.content;
-      const parts = content?.parts || [];
-
-      // Check if AI wants to call functions
-      const functionCalls = parts.filter((part: any) => part.functionCall);
+      const message = choice.message;
       
-      if (functionCalls.length > 0) {
-        console.log('AI requested function calls:', functionCalls.length);
+      // Check if AI wants to call functions
+      if (message.tool_calls && message.tool_calls.length > 0) {
+        console.log('AI requested function calls:', message.tool_calls.length);
         
-        // Add assistant's function call to conversation
-        geminiContents.push({
-          role: 'model',
-          parts: functionCalls
-        });
+        // Add assistant's message with tool calls to conversation
+        openaiMessages.push(message);
 
         // Execute each function call
-        const functionResponses = [];
-        
-        for (const part of functionCalls) {
-          const functionCall = part.functionCall;
-          const functionName = functionCall.name;
-          const functionArgs = functionCall.args || {};
+        for (const toolCall of message.tool_calls) {
+          const functionName = toolCall.function.name;
+          const functionArgs = JSON.parse(toolCall.function.arguments || '{}');
           
           console.log(`Executing tool: ${functionName}`, functionArgs);
 
@@ -479,27 +438,20 @@ You MUST respond in the user's selected language at all times.
             toolResult = { error: `Failed to execute ${functionName}` };
           }
 
-          functionResponses.push({
-            functionResponse: {
-              name: functionName,
-              response: toolResult
-            }
+          // Add tool response to conversation
+          openaiMessages.push({
+            role: 'tool',
+            tool_call_id: toolCall.id,
+            content: JSON.stringify(toolResult)
           });
         }
-
-        // Add function responses to conversation
-        geminiContents.push({
-          role: 'function',
-          parts: functionResponses
-        });
 
         // Continue the loop to get AI's response with the function results
         continue;
       }
 
       // No more function calls, return the final response
-      const textPart = parts.find((part: any) => part.text);
-      const finalMessage = textPart?.text;
+      const finalMessage = message.content;
       
       if (!finalMessage) {
         return new Response(
