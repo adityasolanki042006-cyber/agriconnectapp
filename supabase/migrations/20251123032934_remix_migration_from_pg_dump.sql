@@ -1,3 +1,9 @@
+CREATE EXTENSION IF NOT EXISTS "pg_graphql";
+CREATE EXTENSION IF NOT EXISTS "pg_stat_statements";
+CREATE EXTENSION IF NOT EXISTS "pgcrypto";
+CREATE EXTENSION IF NOT EXISTS "plpgsql";
+CREATE EXTENSION IF NOT EXISTS "supabase_vault";
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 --
 -- PostgreSQL database dump
 --
@@ -85,6 +91,48 @@ $$;
 SET default_table_access_method = heap;
 
 --
+-- Name: cart; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.cart (
+    id uuid DEFAULT gen_random_uuid() NOT NULL,
+    user_id uuid NOT NULL,
+    product_id uuid NOT NULL,
+    quantity integer DEFAULT 1 NOT NULL,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    updated_at timestamp with time zone DEFAULT now() NOT NULL,
+    CONSTRAINT cart_quantity_check CHECK ((quantity > 0))
+);
+
+
+--
+-- Name: fertilizers; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.fertilizers (
+    id uuid DEFAULT gen_random_uuid() NOT NULL,
+    name text NOT NULL,
+    type text NOT NULL,
+    npk_ratio text,
+    brand text,
+    price numeric,
+    unit text DEFAULT 'kg'::text,
+    description text,
+    benefits text,
+    usage_instructions text,
+    suitable_for_crops text[],
+    treats_diseases text[],
+    soil_compatibility text[],
+    organic boolean DEFAULT false,
+    rating numeric DEFAULT 4.0,
+    stock_quantity integer DEFAULT 0,
+    image text,
+    created_at timestamp with time zone DEFAULT now(),
+    updated_at timestamp with time zone DEFAULT now()
+);
+
+
+--
 -- Name: order_items; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -168,8 +216,41 @@ CREATE TABLE public.users (
     phone text NOT NULL,
     user_type text NOT NULL,
     created_at timestamp with time zone DEFAULT now() NOT NULL,
+    field_size text,
+    location text,
+    soil_type text,
+    major_crops text[],
+    city text,
+    state text,
+    pincode text,
+    annual_income text,
+    credit_score text,
     CONSTRAINT users_user_type_check CHECK ((user_type = ANY (ARRAY['farmer'::text, 'businessman'::text])))
 );
+
+
+--
+-- Name: cart cart_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.cart
+    ADD CONSTRAINT cart_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: cart cart_user_id_product_id_key; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.cart
+    ADD CONSTRAINT cart_user_id_product_id_key UNIQUE (user_id, product_id);
+
+
+--
+-- Name: fertilizers fertilizers_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.fertilizers
+    ADD CONSTRAINT fertilizers_pkey PRIMARY KEY (id);
 
 
 --
@@ -229,6 +310,55 @@ ALTER TABLE ONLY public.users
 
 
 --
+-- Name: idx_cart_product_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX idx_cart_product_id ON public.cart USING btree (product_id);
+
+
+--
+-- Name: idx_cart_user_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX idx_cart_user_id ON public.cart USING btree (user_id);
+
+
+--
+-- Name: idx_fertilizers_crops; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX idx_fertilizers_crops ON public.fertilizers USING gin (suitable_for_crops);
+
+
+--
+-- Name: idx_fertilizers_diseases; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX idx_fertilizers_diseases ON public.fertilizers USING gin (treats_diseases);
+
+
+--
+-- Name: idx_fertilizers_soil; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX idx_fertilizers_soil ON public.fertilizers USING gin (soil_compatibility);
+
+
+--
+-- Name: idx_fertilizers_type; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX idx_fertilizers_type ON public.fertilizers USING btree (type);
+
+
+--
+-- Name: cart update_cart_updated_at; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER update_cart_updated_at BEFORE UPDATE ON public.cart FOR EACH ROW EXECUTE FUNCTION public.update_updated_at_column();
+
+
+--
 -- Name: orders update_orders_updated_at; Type: TRIGGER; Schema: public; Owner: -
 --
 
@@ -247,6 +377,14 @@ CREATE TRIGGER update_products_updated_at BEFORE UPDATE ON public.products FOR E
 --
 
 CREATE TRIGGER update_profiles_updated_at BEFORE UPDATE ON public.profiles FOR EACH ROW EXECUTE FUNCTION public.update_updated_at_column();
+
+
+--
+-- Name: cart cart_product_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.cart
+    ADD CONSTRAINT cart_product_id_fkey FOREIGN KEY (product_id) REFERENCES public.products(id) ON DELETE CASCADE;
 
 
 --
@@ -326,6 +464,13 @@ CREATE POLICY "Admins can view all orders" ON public.orders FOR SELECT USING ((E
 
 
 --
+-- Name: fertilizers Anyone can view fertilizers; Type: POLICY; Schema: public; Owner: -
+--
+
+CREATE POLICY "Anyone can view fertilizers" ON public.fertilizers FOR SELECT USING (true);
+
+
+--
 -- Name: products Anyone can view products; Type: POLICY; Schema: public; Owner: -
 --
 
@@ -333,10 +478,24 @@ CREATE POLICY "Anyone can view products" ON public.products FOR SELECT USING (tr
 
 
 --
+-- Name: cart Users can add to their own cart; Type: POLICY; Schema: public; Owner: -
+--
+
+CREATE POLICY "Users can add to their own cart" ON public.cart FOR INSERT WITH CHECK ((auth.uid() = user_id));
+
+
+--
 -- Name: orders Users can create their own orders; Type: POLICY; Schema: public; Owner: -
 --
 
 CREATE POLICY "Users can create their own orders" ON public.orders FOR INSERT WITH CHECK ((auth.uid() = customer_id));
+
+
+--
+-- Name: cart Users can delete from their own cart; Type: POLICY; Schema: public; Owner: -
+--
+
+CREATE POLICY "Users can delete from their own cart" ON public.cart FOR DELETE USING ((auth.uid() = user_id));
 
 
 --
@@ -354,6 +513,13 @@ CREATE POLICY "Users can insert their own profile" ON public.users FOR INSERT WI
 
 
 --
+-- Name: cart Users can update their own cart; Type: POLICY; Schema: public; Owner: -
+--
+
+CREATE POLICY "Users can update their own cart" ON public.cart FOR UPDATE USING ((auth.uid() = user_id));
+
+
+--
 -- Name: profiles Users can update their own profile; Type: POLICY; Schema: public; Owner: -
 --
 
@@ -365,6 +531,13 @@ CREATE POLICY "Users can update their own profile" ON public.profiles FOR UPDATE
 --
 
 CREATE POLICY "Users can update their own profile" ON public.users FOR UPDATE USING ((auth.uid() = id));
+
+
+--
+-- Name: cart Users can view their own cart; Type: POLICY; Schema: public; Owner: -
+--
+
+CREATE POLICY "Users can view their own cart" ON public.cart FOR SELECT USING ((auth.uid() = user_id));
 
 
 --
@@ -396,6 +569,18 @@ CREATE POLICY "Users can view their own profile" ON public.profiles FOR SELECT U
 
 CREATE POLICY "Users can view their own profile" ON public.users FOR SELECT USING ((auth.uid() = id));
 
+
+--
+-- Name: cart; Type: ROW SECURITY; Schema: public; Owner: -
+--
+
+ALTER TABLE public.cart ENABLE ROW LEVEL SECURITY;
+
+--
+-- Name: fertilizers; Type: ROW SECURITY; Schema: public; Owner: -
+--
+
+ALTER TABLE public.fertilizers ENABLE ROW LEVEL SECURITY;
 
 --
 -- Name: order_items; Type: ROW SECURITY; Schema: public; Owner: -
