@@ -75,7 +75,7 @@ const ProfileCompletion = () => {
         }
       } else if (data.user_type === 'businessman') {
         if (data.city && data.state && data.pincode && data.annual_income && data.credit_score) {
-          navigate('/dashboard');
+          navigate('/business-dashboard');
           return;
         }
       }
@@ -189,7 +189,7 @@ const ProfileCompletion = () => {
         description: 'Your business profile has been completed successfully.',
       });
 
-      navigate('/dashboard');
+      navigate('/business-dashboard');
     } catch (error) {
       console.error('Error updating profile:', error);
       toast({

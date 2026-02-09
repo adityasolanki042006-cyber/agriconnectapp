@@ -113,6 +113,11 @@ const Dashboard = () => {
       
       // Show profile even if incomplete
       if (data) {
+        // Redirect business users to their dedicated dashboard
+        if (data.user_type === 'businessman') {
+          navigate('/business-dashboard');
+          return;
+        }
         setProfile(data);
       } else {
         // If no profile exists in users table, create one from auth metadata

@@ -1,16 +1,35 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Menu, X, Sprout, LogOut } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { supabase } from '@/integrations/supabase/client';
 import LanguageSwitcher from '@/components/LanguageSwitcher';
 
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [userType, setUserType] = useState<string | null>(null);
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
   const { t } = useTranslation();
+
+  useEffect(() => {
+    if (user) {
+      supabase
+        .from('users')
+        .select('user_type')
+        .eq('id', user.id)
+        .maybeSingle()
+        .then(({ data }) => {
+          setUserType(data?.user_type || user.user_metadata?.user_type || null);
+        });
+    } else {
+      setUserType(null);
+    }
+  }, [user]);
+
+  const dashboardHref = userType === 'businessman' ? '/business-dashboard' : '/dashboard';
 
   const navItems = [
     { name: t('nav.home'), href: '/' },
@@ -21,7 +40,7 @@ const Navigation = () => {
     { name: t('nav.fertilizerFriend'), href: '/fertilizer' },
     { name: t('nav.search'), href: '/search' },
     { name: t('nav.aboutUs'), href: '/about' },
-    { name: t('nav.bio'), href: '/dashboard' },
+    { name: t('nav.bio'), href: dashboardHref },
   ];
 
   const handleNavigation = (href: string) => {
