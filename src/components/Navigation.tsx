@@ -1,8 +1,9 @@
-import { useState, useEffect } from 'react';
-import { Menu, X, Sprout, LogOut } from 'lucide-react';
+import { useState, useEffect, useMemo } from 'react';
+import { Menu, X, Sprout, LogOut, Briefcase } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 import { useAuth } from '@/context/AuthContext';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { supabase } from '@/integrations/supabase/client';
 import LanguageSwitcher from '@/components/LanguageSwitcher';
@@ -12,6 +13,7 @@ const Navigation = () => {
   const [userType, setUserType] = useState<string | null>(null);
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
   const { t } = useTranslation();
 
   useEffect(() => {
@@ -29,19 +31,42 @@ const Navigation = () => {
     }
   }, [user]);
 
-  const dashboardHref = userType === 'businessman' ? '/business-dashboard' : '/dashboard';
+  const navItems = useMemo(() => {
+    // Common items for all users (logged in or not)
+    const commonPublic = [
+      { name: t('nav.home'), href: '/' },
+      { name: t('nav.marketplace'), href: '/marketplace' },
+      { name: t('nav.vendors'), href: '/vendors' },
+      { name: t('nav.search'), href: '/search' },
+      { name: t('nav.aboutUs'), href: '/about' },
+    ];
 
-  const navItems = [
-    { name: t('nav.home'), href: '/' },
-    { name: t('nav.marketplace'), href: '/marketplace' },
-    { name: t('nav.orders'), href: '/orders' },
-    { name: t('nav.orderHistory'), href: '/order-history' },
-    { name: t('nav.vendors'), href: '/vendors' },
-    { name: t('nav.fertilizerFriend'), href: '/fertilizer' },
-    { name: t('nav.search'), href: '/search' },
-    { name: t('nav.aboutUs'), href: '/about' },
-    { name: t('nav.bio'), href: dashboardHref },
-  ];
+    if (!user || !userType) {
+      // Not logged in — show general nav
+      return [
+        ...commonPublic,
+        { name: t('nav.fertilizerFriend'), href: '/fertilizer' },
+      ];
+    }
+
+    if (userType === 'farmer') {
+      return [
+        ...commonPublic,
+        { name: t('nav.orders'), href: '/orders' },
+        { name: t('nav.orderHistory'), href: '/order-history' },
+        { name: t('nav.fertilizerFriend'), href: '/fertilizer' },
+        { name: t('nav.bio'), href: '/dashboard' },
+      ];
+    }
+
+    // Businessman
+    return [
+      ...commonPublic,
+      { name: t('nav.orders'), href: '/orders' },
+      { name: t('nav.orderHistory'), href: '/order-history' },
+      { name: 'Business Hub', href: '/business-dashboard' },
+    ];
+  }, [user, userType, t]);
 
   const handleNavigation = (href: string) => {
     if (href.startsWith('/')) {
@@ -61,6 +86,8 @@ const Navigation = () => {
     navigate('/signin');
   };
 
+  const isActive = (href: string) => location.pathname === href;
+
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-sm border-b border-border">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -68,9 +95,18 @@ const Navigation = () => {
           {/* Logo */}
           <div className="flex items-center space-x-2 cursor-pointer" onClick={() => handleNavigation('/')}>
             <div className="w-10 h-10 bg-gradient-hero rounded-lg flex items-center justify-center">
-              <Sprout className="w-6 h-6 text-white" />
+              {userType === 'businessman' ? (
+                <Briefcase className="w-6 h-6 text-white" />
+              ) : (
+                <Sprout className="w-6 h-6 text-white" />
+              )}
             </div>
             <span className="text-xl font-bold text-foreground">AgriConnect</span>
+            {user && userType && (
+              <Badge variant="outline" className="hidden lg:inline-flex text-xs ml-1 border-primary/30">
+                {userType === 'farmer' ? '🌾 Farmer' : '💼 Business'}
+              </Badge>
+            )}
           </div>
 
           {/* Desktop Navigation */}
@@ -80,7 +116,11 @@ const Navigation = () => {
                 <button
                   key={item.name}
                   onClick={() => handleNavigation(item.href)}
-                  className="nav-link px-3 py-2 rounded-md text-sm font-medium"
+                  className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                    isActive(item.href)
+                      ? 'text-primary bg-primary/10'
+                      : 'nav-link'
+                  }`}
                 >
                   {item.name}
                 </button>
@@ -142,12 +182,23 @@ const Navigation = () => {
       {/* Mobile Navigation */}
       {isOpen && (
         <div className="md:hidden bg-background border-t border-border">
+          {user && userType && (
+            <div className="px-4 py-2 border-b border-border">
+              <Badge variant="outline" className="text-xs border-primary/30">
+                {userType === 'farmer' ? '🌾 Farmer Account' : '💼 Business Account'}
+              </Badge>
+            </div>
+          )}
           <div className="px-2 pt-2 pb-3 space-y-1">
             {navItems.map((item) => (
               <button
                 key={item.name}
                 onClick={() => handleNavigation(item.href)}
-                className="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-foreground hover:text-primary hover:bg-muted transition-smooth"
+                className={`block w-full text-left px-3 py-2 rounded-md text-base font-medium transition-smooth ${
+                  isActive(item.href)
+                    ? 'text-primary bg-primary/10'
+                    : 'text-foreground hover:text-primary hover:bg-muted'
+                }`}
               >
                 {item.name}
               </button>
