@@ -189,7 +189,7 @@ const ProfileCompletion = () => {
         description: 'Your business profile has been completed successfully.',
       });
 
-      navigate('/dashboard');
+      navigate('/business-dashboard');
     } catch (error) {
       console.error('Error updating profile:', error);
       toast({
