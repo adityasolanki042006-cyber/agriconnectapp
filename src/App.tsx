@@ -19,6 +19,7 @@ import Register from "./pages/Register";
 import SignIn from "./pages/SignIn";
 import ForgotPassword from "./pages/ForgotPassword";
 import Dashboard from "./pages/Dashboard";
+import BusinessDashboard from "./pages/BusinessDashboard";
 import Admin from "./pages/Admin";
 import OrderHistory from "./pages/OrderHistory";
 import ProfileCompletion from "./pages/ProfileCompletion";
