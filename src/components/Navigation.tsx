@@ -40,7 +40,7 @@ const Navigation = () => {
     { name: t('nav.fertilizerFriend'), href: '/fertilizer' },
     { name: t('nav.search'), href: '/search' },
     { name: t('nav.aboutUs'), href: '/about' },
-    { name: t('nav.bio'), href: '/dashboard' },
+    { name: t('nav.bio'), href: dashboardHref },
   ];
 
   const handleNavigation = (href: string) => {
