@@ -3,6 +3,7 @@ import { ShoppingCart, Plus, Minus, Star, MapPin, TrendingUp } from 'lucide-reac
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { useTranslation } from 'react-i18next';
 import marketplaceCrops from '@/assets/marketplace-crops.jpg';
 import freshTomatoes from '@/assets/fresh-tomatoes.jpg';
 
@@ -19,6 +20,7 @@ interface Product {
 }
 
 const MarketplaceSection = () => {
+  const { t } = useTranslation();
   const [cart, setCart] = useState<{[key: number]: number}>({});
   const [selectedCategory, setSelectedCategory] = useState('All');
 
@@ -38,178 +40,85 @@ const MarketplaceSection = () => {
     : products.filter(p => p.category === selectedCategory);
 
   const addToCart = (productId: number) => {
-    setCart(prev => ({
-      ...prev,
-      [productId]: (prev[productId] || 0) + 1
-    }));
+    setCart(prev => ({ ...prev, [productId]: (prev[productId] || 0) + 1 }));
   };
 
   const removeFromCart = (productId: number) => {
     setCart(prev => {
       const newCart = { ...prev };
-      if (newCart[productId] > 1) {
-        newCart[productId]--;
-      } else {
-        delete newCart[productId];
-      }
+      if (newCart[productId] > 1) { newCart[productId]--; } else { delete newCart[productId]; }
       return newCart;
     });
   };
 
-  const getTotalPrice = () => {
-    return Object.entries(cart).reduce((total, [productId, quantity]) => {
-      const product = products.find(p => p.id === parseInt(productId));
-      return total + (product?.price || 0) * quantity;
-    }, 0);
-  };
+  const getTotalPrice = () => Object.entries(cart).reduce((total, [productId, quantity]) => {
+    const product = products.find(p => p.id === parseInt(productId));
+    return total + (product?.price || 0) * quantity;
+  }, 0);
 
-  const getTotalItems = () => {
-    return Object.values(cart).reduce((sum, quantity) => sum + quantity, 0);
-  };
+  const getTotalItems = () => Object.values(cart).reduce((sum, quantity) => sum + quantity, 0);
 
   return (
     <section id="marketplace" className="py-20 bg-gradient-to-b from-white to-green-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header */}
         <div className="text-center mb-16">
           <div className="inline-flex items-center px-4 py-2 bg-green-100 rounded-full mb-6">
             <ShoppingCart className="w-5 h-5 text-green-600 mr-2" />
-            <span className="text-green-700 font-medium">AgriConnect Marketplace</span>
+            <span className="text-green-700 font-medium">{t('marketplaceHome.badge')}</span>
           </div>
-          
-          <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-6">
-            Fresh From Farm to Your Doorstep
-          </h2>
-          
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-8">
-            Buy directly from farmers at fair prices. Support local agriculture while getting fresh, 
-            quality produce with real-time pricing and tracking.
-          </p>
-
-          {/* Hero Image */}
+          <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-6">{t('marketplaceHome.title')}</h2>
+          <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-8">{t('marketplaceHome.desc')}</p>
           <div className="relative rounded-2xl overflow-hidden shadow-xl mb-12">
-            <img 
-              src={marketplaceCrops} 
-              alt="Fresh agricultural marketplace with various crops"
-              className="w-full h-64 object-cover"
-            />
+            <img src={marketplaceCrops} alt="Fresh agricultural marketplace" className="w-full h-64 object-cover" />
             <div className="absolute inset-0 bg-gradient-to-r from-green-500/20 to-transparent"></div>
             <div className="absolute bottom-4 left-4 bg-white/90 backdrop-blur-sm rounded-lg p-4">
-              <div className="text-sm font-medium text-gray-900">Live Market Status</div>
-              <div className="text-2xl font-bold text-green-600">2,847 Products Available</div>
+              <div className="text-sm font-medium text-gray-900">{t('marketplaceHome.liveStatus')}</div>
+              <div className="text-2xl font-bold text-green-600">{t('marketplaceHome.productsAvailable')}</div>
             </div>
           </div>
         </div>
 
-        {/* Category Filter */}
         <div className="flex flex-wrap justify-center gap-4 mb-12">
           {categories.map(category => (
-            <Button
-              key={category}
-              variant={selectedCategory === category ? "default" : "outline"}
-              onClick={() => setSelectedCategory(category)}
-              className={selectedCategory === category ? "btn-hero" : ""}
-            >
+            <Button key={category} variant={selectedCategory === category ? "default" : "outline"} onClick={() => setSelectedCategory(category)} className={selectedCategory === category ? "btn-hero" : ""}>
               {category}
             </Button>
           ))}
         </div>
 
-        {/* Products Grid */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
           {filteredProducts.map((product) => (
             <Card key={product.id} className="card-field hover:shadow-xl transition-all duration-300 group">
               <div className="p-6">
-                {/* Product Header */}
                 <div className="flex items-start justify-between mb-4">
                   <div className="w-16 h-16 flex items-center justify-center rounded-lg overflow-hidden bg-gradient-to-br from-green-50 to-green-100">
                     {product.image && (product.image.startsWith('http') || product.image.startsWith('data:image')) ? (
-                      <img 
-                        src={product.image} 
-                        alt={product.name}
-                        className="w-full h-full object-cover"
-                        onError={(e) => {
-                          const parent = e.currentTarget.parentElement;
-                          if (parent) {
-                            e.currentTarget.remove();
-                            parent.innerHTML = '<span class="text-4xl">🌾</span>';
-                          }
-                        }}
-                      />
+                      <img src={product.image} alt={product.name} className="w-full h-full object-cover" onError={(e) => { const parent = e.currentTarget.parentElement; if (parent) { e.currentTarget.remove(); parent.innerHTML = '<span class="text-4xl">🌾</span>'; } }} />
                     ) : (
                       <span className="text-4xl">{product.image || '🌾'}</span>
                     )}
                   </div>
-                  <Badge 
-                    variant={product.trend.startsWith('+') ? "default" : "secondary"}
-                    className={product.trend.startsWith('+') ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"}
-                  >
-                    {product.trend}
-                  </Badge>
+                  <Badge variant={product.trend.startsWith('+') ? "default" : "secondary"} className={product.trend.startsWith('+') ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"}>{product.trend}</Badge>
                 </div>
-
-                {/* Product Details */}
                 <h3 className="text-xl font-bold text-gray-900 mb-2">{product.name}</h3>
-                
                 <div className="flex items-center space-x-2 mb-3">
-                  <div className="flex items-center">
-                    <Star className="w-4 h-4 text-yellow-400 fill-current" />
-                    <span className="text-sm text-gray-600 ml-1">{product.rating}</span>
-                  </div>
+                  <div className="flex items-center"><Star className="w-4 h-4 text-yellow-400 fill-current" /><span className="text-sm text-gray-600 ml-1">{product.rating}</span></div>
                   <span className="text-gray-300">•</span>
-                  <div className="flex items-center">
-                    <MapPin className="w-4 h-4 text-gray-400" />
-                    <span className="text-sm text-gray-600 ml-1">{product.location}</span>
-                  </div>
+                  <div className="flex items-center"><MapPin className="w-4 h-4 text-gray-400" /><span className="text-sm text-gray-600 ml-1">{product.location}</span></div>
                 </div>
-
-                {/* Pricing */}
                 <div className="flex items-center justify-between mb-4">
-                  <div>
-                    <span className="text-2xl font-bold text-gray-900">₹{product.price}</span>
-                    <span className="text-gray-600">/{product.unit}</span>
-                  </div>
-                  <div className="flex items-center text-green-600">
-                    <TrendingUp className="w-4 h-4 mr-1" />
-                    <span className="text-sm font-medium">Fair Price</span>
-                  </div>
+                  <div><span className="text-2xl font-bold text-gray-900">₹{product.price}</span><span className="text-gray-600">/{product.unit}</span></div>
+                  <div className="flex items-center text-green-600"><TrendingUp className="w-4 h-4 mr-1" /><span className="text-sm font-medium">{t('marketplaceHome.fairPrice')}</span></div>
                 </div>
-
-                {/* Add to Cart Controls */}
                 <div className="flex items-center justify-between">
                   {cart[product.id] ? (
                     <div className="flex items-center space-x-3">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => removeFromCart(product.id)}
-                        className="w-8 h-8 p-0"
-                      >
-                        <Minus className="w-4 h-4" />
-                      </Button>
-                      
-                      <span className="font-semibold text-lg min-w-[2rem] text-center">
-                        {cart[product.id]}
-                      </span>
-                      
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => addToCart(product.id)}
-                        className="w-8 h-8 p-0"
-                      >
-                        <Plus className="w-4 h-4" />
-                      </Button>
+                      <Button variant="outline" size="sm" onClick={() => removeFromCart(product.id)} className="w-8 h-8 p-0"><Minus className="w-4 h-4" /></Button>
+                      <span className="font-semibold text-lg min-w-[2rem] text-center">{cart[product.id]}</span>
+                      <Button variant="outline" size="sm" onClick={() => addToCart(product.id)} className="w-8 h-8 p-0"><Plus className="w-4 h-4" /></Button>
                     </div>
                   ) : (
-                    <Button
-                      onClick={() => addToCart(product.id)}
-                      className="btn-success flex-1"
-                      size="sm"
-                    >
-                      <Plus className="w-4 h-4 mr-2" />
-                      Add to Cart
-                    </Button>
+                    <Button onClick={() => addToCart(product.id)} className="btn-success flex-1" size="sm"><Plus className="w-4 h-4 mr-2" />{t('marketplaceHome.addToCart')}</Button>
                   )}
                 </div>
               </div>
@@ -217,67 +126,41 @@ const MarketplaceSection = () => {
           ))}
         </div>
 
-        {/* Cart Summary */}
         {getTotalItems() > 0 && (
           <div className="fixed bottom-6 right-6 bg-white rounded-2xl shadow-2xl border p-6 z-40 min-w-[300px]">
             <div className="flex items-center justify-between mb-4">
-              <h4 className="text-lg font-bold text-gray-900">Your Cart</h4>
-              <Badge className="bg-green-100 text-green-700">
-                {getTotalItems()} items
-              </Badge>
+              <h4 className="text-lg font-bold text-gray-900">{t('marketplaceHome.yourCart')}</h4>
+              <Badge className="bg-green-100 text-green-700">{getTotalItems()} {t('marketplaceHome.items')}</Badge>
             </div>
-            
             <div className="space-y-2 mb-4 max-h-32 overflow-y-auto">
               {Object.entries(cart).map(([productId, quantity]) => {
                 const product = products.find(p => p.id === parseInt(productId));
                 if (!product) return null;
-                
-                return (
-                  <div key={productId} className="flex justify-between items-center text-sm">
-                    <span>{product.name} x{quantity}</span>
-                    <span className="font-semibold">₹{product.price * quantity}</span>
-                  </div>
-                );
+                return (<div key={productId} className="flex justify-between items-center text-sm"><span>{product.name} x{quantity}</span><span className="font-semibold">₹{product.price * quantity}</span></div>);
               })}
             </div>
-            
             <div className="border-t pt-4">
-              <div className="flex justify-between items-center mb-4">
-                <span className="text-lg font-bold">Total: ₹{getTotalPrice()}</span>
-              </div>
-              
-              <Button className="btn-hero w-full">
-                <ShoppingCart className="w-5 h-5 mr-2" />
-                Proceed to Checkout
-              </Button>
+              <div className="flex justify-between items-center mb-4"><span className="text-lg font-bold">Total: ₹{getTotalPrice()}</span></div>
+              <Button className="btn-hero w-full"><ShoppingCart className="w-5 h-5 mr-2" />{t('marketplaceHome.proceedToCheckout')}</Button>
             </div>
           </div>
         )}
 
-        {/* Trust Indicators */}
         <div className="grid md:grid-cols-3 gap-8 mt-16">
           <div className="text-center">
-            <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <ShoppingCart className="w-8 h-8 text-green-600" />
-            </div>
-            <h4 className="font-bold text-gray-900 mb-2">Direct from Farmers</h4>
-            <p className="text-gray-600">No middlemen, fair prices for everyone</p>
+            <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4"><ShoppingCart className="w-8 h-8 text-green-600" /></div>
+            <h4 className="font-bold text-gray-900 mb-2">{t('marketplaceHome.directFromFarmers')}</h4>
+            <p className="text-gray-600">{t('marketplaceHome.directFromFarmersDesc')}</p>
           </div>
-          
           <div className="text-center">
-            <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <TrendingUp className="w-8 h-8 text-blue-600" />
-            </div>
-            <h4 className="font-bold text-gray-900 mb-2">Real-time Pricing</h4>
-            <p className="text-gray-600">Always updated market rates</p>
+            <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4"><TrendingUp className="w-8 h-8 text-blue-600" /></div>
+            <h4 className="font-bold text-gray-900 mb-2">{t('marketplaceHome.realtimePricing')}</h4>
+            <p className="text-gray-600">{t('marketplaceHome.realtimePricingDesc')}</p>
           </div>
-          
           <div className="text-center">
-            <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Star className="w-8 h-8 text-purple-600" />
-            </div>
-            <h4 className="font-bold text-gray-900 mb-2">Quality Guaranteed</h4>
-            <p className="text-gray-600">Verified sellers, fresh produce</p>
+            <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4"><Star className="w-8 h-8 text-purple-600" /></div>
+            <h4 className="font-bold text-gray-900 mb-2">{t('marketplaceHome.qualityGuaranteed')}</h4>
+            <p className="text-gray-600">{t('marketplaceHome.qualityGuaranteedDesc')}</p>
           </div>
         </div>
       </div>
