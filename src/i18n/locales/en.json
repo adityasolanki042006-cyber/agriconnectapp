@@ -614,5 +614,17 @@
     "filter": "Filter",
     "sort": "Sort",
     "viewAll": "View All"
+  },
+  "contactSupport": {
+    "back": "Back",
+    "title": "Contact Support",
+    "subtitle": "We're here to help! Reach out to us anytime.",
+    "callUs": "Call Us",
+    "callDesc": "Speak directly with our support team",
+    "availability": "Available Mon-Sat, 9 AM - 6 PM IST",
+    "emailUs": "Email Us",
+    "emailDesc": "Send us your queries and we'll respond promptly",
+    "responseTime": "We typically respond within 24 hours",
+    "office": "Our Office"
   }
 }
