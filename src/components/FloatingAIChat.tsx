@@ -230,13 +230,23 @@ const FloatingAIChat = ({ isOpen: externalIsOpen, onOpenChange }: FloatingAIChat
 
       if (error) {
         console.error('Error calling chat function:', error);
+        // Try to read the response body for specific error info
+        let errorBody = '';
+        try {
+          if (error.context?.body) {
+            const reader = error.context.body.getReader?.();
+            if (reader) {
+              const { value } = await reader.read();
+              errorBody = new TextDecoder().decode(value);
+            }
+          }
+        } catch {}
         
-        // Handle 402 error specifically
-        if (error.message?.includes('credits exhausted') || error.message?.includes('402')) {
-          throw new Error('AI service is currently unavailable due to insufficient credits. Please contact support.');
+        if (errorBody.includes('Payment required') || errorBody.includes('credits') || errorBody.includes('Rate limit')) {
+          throw new Error('AI service is temporarily unavailable. Please try again later or add credits to your workspace.');
         }
         
-        throw new Error(error.message || 'Failed to get response from AI');
+        throw new Error('Failed to get response from AI. Please try again.');
       }
 
       if (!data || !data.message) {
