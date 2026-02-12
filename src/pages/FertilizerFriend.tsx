@@ -9,6 +9,8 @@ import { useAppContext } from '@/context/AppContext';
 import Navigation from '@/components/Navigation';
 import FloatingAIChat from '@/components/FloatingAIChat';
 
+import { useTranslation } from 'react-i18next';
+
 interface Fertilizer {
   id: number;
   name: string;
@@ -25,6 +27,7 @@ interface Fertilizer {
 }
 
 const FertilizerFriend = () => {
+  const { t } = useTranslation();
   const { cart, addToCart, updateCartQuantity, getTotalPrice, getTotalItems } = useAppContext();
   const [selectedType, setSelectedType] = useState('All');
   const [selectedCrop, setSelectedCrop] = useState('All');
@@ -146,8 +149,8 @@ const FertilizerFriend = () => {
     const matchesType = selectedType === 'All' || fertilizer.type === selectedType;
     const matchesCrop = selectedCrop === 'All' || fertilizer.suitableFor.includes(selectedCrop) || fertilizer.suitableFor.includes('All Crops');
     const matchesSearch = fertilizer.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         fertilizer.brand.toLowerCase().includes(searchQuery.toLowerCase());
-    
+      fertilizer.brand.toLowerCase().includes(searchQuery.toLowerCase());
+
     return matchesType && matchesCrop && matchesSearch;
   });
 
@@ -178,21 +181,21 @@ const FertilizerFriend = () => {
     <div className="min-h-screen bg-gradient-to-b from-green-50 to-white">
       <Navigation />
       <FloatingAIChat />
-      
+
       <div className="pt-20 pb-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Header */}
           <div className="text-center mb-12">
             <div className="inline-flex items-center px-4 py-2 bg-green-100 rounded-full mb-6">
               <Beaker className="w-5 h-5 text-green-600 mr-2" />
-              <span className="text-green-700 font-medium">AI-Powered Fertilizer Assistant</span>
+              <span className="text-green-700 font-medium">{t('fertilizer.aiAssistant')}</span>
             </div>
-            
+
             <h1 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-6">
-              Fertilizer Friend
+              {t('fertilizer.title')}
             </h1>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Get AI-powered fertilizer recommendations based on your crop type and soil conditions
+              {t('fertilizer.subtitle')}
             </p>
           </div>
 
@@ -203,7 +206,7 @@ const FertilizerFriend = () => {
               className="btn-hero"
             >
               <Bot className="w-5 h-5 mr-2" />
-              {showAIRecommendations ? 'Hide' : 'Show'} AI Recommendations
+              {showAIRecommendations ? t('fertilizer.hideRecommendations') : t('fertilizer.showRecommendations')}
             </Button>
           </div>
 
@@ -212,7 +215,7 @@ const FertilizerFriend = () => {
             <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-2xl p-6 mb-8">
               <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
                 <Bot className="w-6 h-6 text-blue-600 mr-2" />
-                AI Fertilizer Recommendations
+                {t('fertilizer.aiRecommendations')}
               </h3>
               <div className="grid md:grid-cols-3 gap-4">
                 {aiRecommendations.map((rec, index) => (
@@ -236,32 +239,32 @@ const FertilizerFriend = () => {
                 <div className="relative">
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
                   <Input
-                    placeholder="Search fertilizers..."
+                    placeholder={t('fertilizer.searchPlaceholder')}
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     className="pl-10"
                   />
                 </div>
               </div>
-              
+
               <Select value={selectedType} onValueChange={setSelectedType}>
                 <SelectTrigger>
-                  <SelectValue placeholder="Fertilizer Type" />
+                  <SelectValue placeholder={t('fertilizer.fertilizerType')} />
                 </SelectTrigger>
                 <SelectContent>
                   {fertilizerTypes.map(type => (
-                    <SelectItem key={type} value={type}>{type}</SelectItem>
+                    <SelectItem key={type} value={type}>{type === 'All' ? t('fertilizer.types.all') : type}</SelectItem>
                   ))}
                 </SelectContent>
               </Select>
 
               <Select value={selectedCrop} onValueChange={setSelectedCrop}>
                 <SelectTrigger>
-                  <SelectValue placeholder="Crop Type" />
+                  <SelectValue placeholder={t('fertilizer.cropType')} />
                 </SelectTrigger>
                 <SelectContent>
                   {cropTypes.map(crop => (
-                    <SelectItem key={crop} value={crop}>{crop}</SelectItem>
+                    <SelectItem key={crop} value={crop}>{crop === 'All' ? t('fertilizer.types.all') : crop}</SelectItem>
                   ))}
                 </SelectContent>
               </Select>
@@ -280,7 +283,7 @@ const FertilizerFriend = () => {
                       {fertilizer.organic && (
                         <Badge className="bg-green-100 text-green-700">
                           <Leaf className="w-3 h-3 mr-1" />
-                          Organic
+                          {t('fertilizer.organic')}
                         </Badge>
                       )}
                       <Badge variant="outline">{fertilizer.type}</Badge>
@@ -290,11 +293,11 @@ const FertilizerFriend = () => {
                   {/* Fertilizer Details */}
                   <h3 className="text-lg font-bold text-gray-900 mb-2">{fertilizer.name}</h3>
                   <p className="text-sm text-gray-600 mb-3">{fertilizer.description}</p>
-                  
+
                   <div className="mb-3">
-                    <div className="text-sm text-gray-600 mb-1">Brand: {fertilizer.brand}</div>
-                    <div className="text-sm text-gray-600 mb-1">NPK Ratio: {fertilizer.npkRatio}</div>
-                    
+                    <div className="text-sm text-gray-600 mb-1">{t('fertilizer.brand')}: {fertilizer.brand}</div>
+                    <div className="text-sm text-gray-600 mb-1">{t('fertilizer.npkRatio')}: {fertilizer.npkRatio}</div>
+
                     <div className="flex items-center space-x-2 mb-2">
                       <Star className="w-4 h-4 text-yellow-400 fill-current" />
                       <span className="text-sm text-gray-600">{fertilizer.rating}</span>
@@ -303,7 +306,7 @@ const FertilizerFriend = () => {
 
                   {/* Suitable Crops */}
                   <div className="mb-4">
-                    <div className="text-sm font-medium text-gray-900 mb-2">Suitable for:</div>
+                    <div className="text-sm font-medium text-gray-900 mb-2">{t('fertilizer.suitableFor')}:</div>
                     <div className="flex flex-wrap gap-1">
                       {fertilizer.suitableFor.slice(0, 3).map((crop, index) => (
                         <Badge key={index} variant="outline" className="text-xs">
@@ -333,11 +336,11 @@ const FertilizerFriend = () => {
                         >
                           <Minus className="w-4 h-4" />
                         </Button>
-                        
+
                         <span className="font-semibold text-lg flex-1 text-center">
                           {getCartQuantity(fertilizer.id)}
                         </span>
-                        
+
                         <Button
                           variant="outline"
                           size="sm"
@@ -354,7 +357,7 @@ const FertilizerFriend = () => {
                         size="sm"
                       >
                         <Plus className="w-4 h-4 mr-2" />
-                        Add to Cart
+                        {t('fertilizer.addToCart')}
                       </Button>
                     )}
                   </div>
@@ -367,19 +370,19 @@ const FertilizerFriend = () => {
           {getTotalItems() > 0 && (
             <div className="fixed bottom-24 right-6 bg-white rounded-2xl shadow-2xl border p-6 z-40 min-w-[300px]">
               <div className="flex items-center justify-between mb-4">
-                <h4 className="text-lg font-bold text-gray-900">Your Cart</h4>
+                <h4 className="text-lg font-bold text-gray-900">{t('fertilizer.yourCart')}</h4>
                 <Badge className="bg-green-100 text-green-700">
-                  {getTotalItems()} items
+                  {getTotalItems()} {t('fertilizer.items')}
                 </Badge>
               </div>
-              
+
               <div className="border-t pt-4">
                 <div className="flex justify-between items-center mb-4">
-                  <span className="text-lg font-bold">Total: ₹{getTotalPrice()}</span>
+                  <span className="text-lg font-bold">{t('fertilizer.total')}: ₹{getTotalPrice()}</span>
                 </div>
-                
+
                 <Button className="btn-hero w-full">
-                  Proceed to Checkout
+                  {t('fertilizer.proceedToCheckout')}
                 </Button>
               </div>
             </div>
@@ -391,24 +394,24 @@ const FertilizerFriend = () => {
               <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Bot className="w-8 h-8 text-green-600" />
               </div>
-              <h4 className="font-bold text-gray-900 mb-2">AI Recommendations</h4>
-              <p className="text-gray-600">Get personalized fertilizer suggestions based on your crop and soil type</p>
+              <h4 className="font-bold text-gray-900 mb-2">{t('fertilizer.benefits.aiRecommendations')}</h4>
+              <p className="text-gray-600">{t('fertilizer.benefits.aiDesc')}</p>
             </div>
-            
+
             <div className="text-center bg-white rounded-xl p-6 shadow-soft">
               <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Leaf className="w-8 h-8 text-blue-600" />
               </div>
-              <h4 className="font-bold text-gray-900 mb-2">Organic Options</h4>
-              <p className="text-gray-600">Wide range of organic and eco-friendly fertilizers</p>
+              <h4 className="font-bold text-gray-900 mb-2">{t('fertilizer.benefits.organicOptions')}</h4>
+              <p className="text-gray-600">{t('fertilizer.benefits.organicDesc')}</p>
             </div>
-            
+
             <div className="text-center bg-white rounded-xl p-6 shadow-soft">
               <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Beaker className="w-8 h-8 text-purple-600" />
               </div>
-              <h4 className="font-bold text-gray-900 mb-2">Quality Assured</h4>
-              <p className="text-gray-600">All fertilizers tested and certified for optimal crop nutrition</p>
+              <h4 className="font-bold text-gray-900 mb-2">{t('fertilizer.benefits.qualityAssured')}</h4>
+              <p className="text-gray-600">{t('fertilizer.benefits.qualityDesc')}</p>
             </div>
           </div>
         </div>

@@ -26,7 +26,10 @@ interface UserProfile {
   credit_score: string | null;
 }
 
+import { useTranslation } from 'react-i18next';
+
 const Dashboard = () => {
+  const { t } = useTranslation();
   const { user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
   const [profile, setProfile] = useState<UserProfile | null>(null);
@@ -34,23 +37,23 @@ const Dashboard = () => {
 
   const calculateProfileCompletion = (profile: UserProfile) => {
     const baseFields = [
-      { name: 'Full Name', value: profile.full_name, required: true },
-      { name: 'Email', value: profile.email, required: true },
-      { name: 'Phone', value: profile.phone, required: true },
-      { name: 'City', value: profile.city, required: true },
-      { name: 'State', value: profile.state, required: true },
-      { name: 'Pincode', value: profile.pincode, required: true },
-      { name: 'Annual Income', value: profile.annual_income, required: true },
-      { name: 'Credit Score', value: profile.credit_score, required: true },
+      { name: t('dashboard.fullName'), value: profile.full_name, required: true },
+      { name: t('dashboard.email'), value: profile.email, required: true },
+      { name: t('dashboard.phone'), value: profile.phone, required: true },
+      { name: t('dashboard.location'), value: profile.city, required: true },
+      { name: t('common.state'), value: profile.state, required: true }, // Assuming common.state might exist or use dashboard keys if mapped. Let's check en.json. Actually en.json has keys in dashboard for these.
+      { name: t('dashboard.pincode'), value: profile.pincode, required: true },
+      { name: t('dashboard.annualIncome'), value: profile.annual_income, required: true },
+      { name: t('dashboard.creditScore'), value: profile.credit_score, required: true },
     ];
 
     const farmerFields = [
-      { name: 'Soil Type', value: profile.soil_type, required: true },
-      { name: 'Major Crops', value: profile.major_crops, required: true },
-      { name: 'Field Size', value: profile.field_size, required: true },
+      { name: t('dashboard.soilType'), value: profile.soil_type, required: true },
+      { name: t('dashboard.majorCrops'), value: profile.major_crops, required: true },
+      { name: t('dashboard.fieldSize'), value: profile.field_size, required: true },
     ];
 
-    const allFields = profile.user_type === 'farmer' 
+    const allFields = profile.user_type === 'farmer'
       ? [...baseFields, ...farmerFields]
       : baseFields;
 
@@ -69,7 +72,7 @@ const Dashboard = () => {
       filledFields: filledFields.length,
       fields: allFields.map(field => ({
         ...field,
-        filled: Array.isArray(field.value) 
+        filled: Array.isArray(field.value)
           ? field.value && field.value.length > 0
           : field.value && field.value.toString().trim() !== ''
       }))
@@ -110,7 +113,7 @@ const Dashboard = () => {
         .maybeSingle();
 
       if (error) throw error;
-      
+
       // Show profile even if incomplete
       if (data) {
         setProfile(data);
@@ -175,7 +178,7 @@ const Dashboard = () => {
         <Navigation />
         <div className="container mx-auto px-4 py-16 text-center">
           <Loader2 className="w-8 h-8 animate-spin text-primary mx-auto mb-4" />
-          <p className="text-muted-foreground">Loading profile...</p>
+          <p className="text-muted-foreground">{t('common.loading')}</p>
         </div>
       </div>
     );
@@ -190,20 +193,20 @@ const Dashboard = () => {
       <div className="container mx-auto px-4 py-16">
         <div className="max-w-3xl mx-auto">
           <div className="mb-8">
-            <h1 className="text-4xl font-bold mb-2">My Dashboard</h1>
-            <p className="text-muted-foreground">Welcome back, {profile.full_name || 'User'}!</p>
+            <h1 className="text-4xl font-bold mb-2">{t('dashboard.title')}</h1>
+            <p className="text-muted-foreground">{t('dashboard.welcome')}, {profile.full_name || 'User'}!</p>
             {isIncomplete && (
               <div className="mt-4 p-4 bg-yellow-500/10 border border-yellow-500/20 rounded-lg">
                 <p className="text-sm text-yellow-700 dark:text-yellow-300 flex items-center gap-2">
                   <XCircle className="w-4 h-4" />
-                  Your profile is incomplete. Complete it to unlock all features.
-                  <Button 
+                  {t('dashboard.incompleteWarning')}
+                  <Button
                     onClick={() => navigate('/profile-completion')}
                     size="sm"
                     variant="outline"
                     className="ml-2"
                   >
-                    Complete Now
+                    {t('dashboard.completeNow')}
                   </Button>
                 </p>
               </div>
@@ -212,7 +215,7 @@ const Dashboard = () => {
 
           <Card className="p-8 shadow-xl">
             <div className="flex items-center justify-between mb-8">
-              <h2 className="text-2xl font-bold">Profile Information</h2>
+              <h2 className="text-2xl font-bold">{t('dashboard.profileInfo')}</h2>
               <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center">
                 {profile.user_type === 'farmer' ? (
                   <Sprout className="w-8 h-8 text-primary" />
@@ -226,28 +229,27 @@ const Dashboard = () => {
             <div className="mb-8 p-6 bg-gradient-to-r from-primary/5 to-primary/10 rounded-lg border border-primary/20">
               <div className="flex items-center justify-between mb-4">
                 <div>
-                  <h3 className="text-lg font-semibold mb-1">Profile Completion</h3>
+                  <h3 className="text-lg font-semibold mb-1">{t('dashboard.profileCompletion')}</h3>
                   <p className="text-sm text-muted-foreground">
-                    {completionData.filledFields} of {completionData.totalFields} fields completed
+                    {completionData.filledFields} {t('orderHistory.of')} {completionData.totalFields} {t('dashboard.fieldsCompleted')}
                   </p>
                 </div>
-                <Badge 
+                <Badge
                   variant={completionData.percentage === 100 ? "default" : "secondary"}
                   className="text-lg px-4 py-2"
                 >
                   {completionData.percentage}%
                 </Badge>
               </div>
-              
+
               <Progress value={completionData.percentage} className="h-3 mb-4" />
-              
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-4">
                 {completionData.fields.map((field, index) => (
-                  <div 
+                  <div
                     key={index}
-                    className={`flex items-center gap-2 text-sm ${
-                      field.filled ? 'text-foreground' : 'text-muted-foreground'
-                    }`}
+                    className={`flex items-center gap-2 text-sm ${field.filled ? 'text-foreground' : 'text-muted-foreground'
+                      }`}
                   >
                     {field.filled ? (
                       <CheckCircle2 className="w-4 h-4 text-green-600 flex-shrink-0" />
@@ -273,14 +275,14 @@ const Dashboard = () => {
                     <Briefcase className="w-12 h-12 text-white" />
                   )}
                 </div>
-                
+
                 {/* Bio Header */}
                 <div className="flex-1">
                   <h3 className="text-2xl font-bold mb-1">{profile.full_name}</h3>
-                  <p className="text-lg text-muted-foreground capitalize mb-2">{profile.user_type}</p>
+                  <p className="text-lg text-muted-foreground capitalize mb-2">{t(`dashboard.${profile.user_type === 'farmer' ? 'farmer' : 'businessman'}`)}</p>
                   <div className="flex items-center gap-2 text-sm text-muted-foreground">
                     <Calendar className="w-4 h-4" />
-                    <span>Member since {new Date(profile.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'long' })}</span>
+                    <span>{t('dashboard.memberSince')} {new Date(profile.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'long' })}</span>
                   </div>
                 </div>
               </div>
@@ -290,7 +292,7 @@ const Dashboard = () => {
                 <div className="flex items-center gap-3">
                   <Mail className="w-5 h-5 text-primary flex-shrink-0" />
                   <div>
-                    <span className="text-sm text-muted-foreground">Email: </span>
+                    <span className="text-sm text-muted-foreground">{t('dashboard.email')}: </span>
                     <span className="font-medium">{profile.email}</span>
                   </div>
                 </div>
@@ -298,7 +300,7 @@ const Dashboard = () => {
                 <div className="flex items-center gap-3">
                   <Phone className="w-5 h-5 text-primary flex-shrink-0" />
                   <div>
-                    <span className="text-sm text-muted-foreground">Phone: </span>
+                    <span className="text-sm text-muted-foreground">{t('dashboard.phone')}: </span>
                     <span className="font-medium">{profile.phone}</span>
                   </div>
                 </div>
@@ -309,11 +311,11 @@ const Dashboard = () => {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                   </svg>
                   <div>
-                    <span className="text-sm text-muted-foreground">Location: </span>
+                    <span className="text-sm text-muted-foreground">{t('dashboard.location')}: </span>
                     <span className={`font-medium ${!profile.city ? 'text-muted-foreground italic' : ''}`}>
-                      {profile.city && profile.state && profile.pincode 
+                      {profile.city && profile.state && profile.pincode
                         ? `${profile.city}, ${profile.state} - ${profile.pincode}`
-                        : 'Not provided'}
+                        : t('dashboard.notProvided')}
                     </span>
                   </div>
                 </div>
@@ -325,9 +327,9 @@ const Dashboard = () => {
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0h4M4 4l5 5m11-5h-4m4 0v4m0-4l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5v-4m0 4h-4m4 0l-5-5" />
                       </svg>
                       <div>
-                        <span className="text-sm text-muted-foreground">Field Size: </span>
+                        <span className="text-sm text-muted-foreground">{t('dashboard.fieldSize')}: </span>
                         <span className={`font-medium ${!profile.field_size ? 'text-muted-foreground italic' : ''}`}>
-                          {profile.field_size || 'Not provided'}
+                          {profile.field_size || t('dashboard.notProvided')}
                         </span>
                       </div>
                     </div>
@@ -337,9 +339,9 @@ const Dashboard = () => {
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 21h18M3 7v1a3 3 0 003 3h12a3 3 0 003-3V7m-18 0V5a2 2 0 012-2h14a2 2 0 012 2v2M3 7h18" />
                       </svg>
                       <div>
-                        <span className="text-sm text-muted-foreground">Soil Type: </span>
+                        <span className="text-sm text-muted-foreground">{t('dashboard.soilType')}: </span>
                         <span className={`font-medium ${!profile.soil_type ? 'text-muted-foreground italic' : ''}`}>
-                          {profile.soil_type || 'Not provided'}
+                          {profile.soil_type || t('dashboard.notProvided')}
                         </span>
                       </div>
                     </div>
@@ -347,11 +349,11 @@ const Dashboard = () => {
                     <div className="flex items-start gap-3">
                       <Sprout className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
                       <div>
-                        <span className="text-sm text-muted-foreground">Major Crops: </span>
+                        <span className="text-sm text-muted-foreground">{t('dashboard.majorCrops')}: </span>
                         <span className={`font-medium ${!profile.major_crops || profile.major_crops.length === 0 ? 'text-muted-foreground italic' : ''}`}>
-                          {profile.major_crops && profile.major_crops.length > 0 
-                            ? profile.major_crops.join(', ') 
-                            : 'Not provided'}
+                          {profile.major_crops && profile.major_crops.length > 0
+                            ? profile.major_crops.join(', ')
+                            : t('dashboard.notProvided')}
                         </span>
                       </div>
                     </div>
@@ -363,14 +365,14 @@ const Dashboard = () => {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
                   <div>
-                    <span className="text-sm text-muted-foreground">Annual Income: </span>
+                    <span className="text-sm text-muted-foreground">{t('dashboard.annualIncome')}: </span>
                     <span className={`font-medium ${!profile.annual_income ? 'text-muted-foreground italic' : ''}`}>
-                      {profile.annual_income === 'less-than-25000' && 'Less than ₹25,000'}
-                      {profile.annual_income === '25000-50000' && '₹25,000 - ₹50,000'}
-                      {profile.annual_income === '50000-75000' && '₹50,000 - ₹75,000'}
-                      {profile.annual_income === '75000-100000' && '₹75,000 - ₹1,00,000'}
-                      {profile.annual_income === 'more-than-100000' && 'More than ₹1,00,000'}
-                      {!profile.annual_income && 'Not provided'}
+                      {profile.annual_income === 'less-than-25000' && t('dashboard.incomeRanges.lessThan25000')}
+                      {profile.annual_income === '25000-50000' && t('dashboard.incomeRanges.25000to50000')}
+                      {profile.annual_income === '50000-75000' && t('dashboard.incomeRanges.50000to75000')}
+                      {profile.annual_income === '75000-100000' && t('dashboard.incomeRanges.75000to100000')}
+                      {profile.annual_income === 'more-than-100000' && t('dashboard.incomeRanges.moreThan100000')}
+                      {!profile.annual_income && t('dashboard.notProvided')}
                     </span>
                   </div>
                 </div>
@@ -380,9 +382,9 @@ const Dashboard = () => {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
                   </svg>
                   <div>
-                    <span className="text-sm text-muted-foreground">Credit Score: </span>
+                    <span className="text-sm text-muted-foreground">{t('dashboard.creditScore')}: </span>
                     <span className={`font-medium ${!profile.credit_score ? 'text-muted-foreground italic' : ''}`}>
-                      {profile.credit_score ? `${profile.credit_score}/10` : 'Not provided'}
+                      {profile.credit_score ? `${profile.credit_score}/10` : t('dashboard.notProvided')}
                     </span>
                   </div>
                 </div>
@@ -393,7 +395,7 @@ const Dashboard = () => {
               <div className="flex items-start space-x-4">
                 <User className="w-5 h-5 text-muted-foreground mt-0.5" />
                 <div>
-                  <p className="text-sm text-muted-foreground">Full Name</p>
+                  <p className="text-sm text-muted-foreground">{t('dashboard.fullName')}</p>
                   <p className="font-semibold">{profile.full_name}</p>
                 </div>
               </div>
@@ -401,7 +403,7 @@ const Dashboard = () => {
               <div className="flex items-start space-x-4">
                 <Mail className="w-5 h-5 text-muted-foreground mt-0.5" />
                 <div>
-                  <p className="text-sm text-muted-foreground">Email Address</p>
+                  <p className="text-sm text-muted-foreground">{t('dashboard.email')}</p>
                   <p className="font-semibold">{profile.email}</p>
                 </div>
               </div>
@@ -409,7 +411,7 @@ const Dashboard = () => {
               <div className="flex items-start space-x-4">
                 <Phone className="w-5 h-5 text-muted-foreground mt-0.5" />
                 <div>
-                  <p className="text-sm text-muted-foreground">Phone Number</p>
+                  <p className="text-sm text-muted-foreground">{t('dashboard.phone')}</p>
                   <p className="font-semibold">{profile.phone}</p>
                 </div>
               </div>
@@ -421,15 +423,15 @@ const Dashboard = () => {
                   <Briefcase className="w-5 h-5 text-muted-foreground mt-0.5" />
                 )}
                 <div>
-                  <p className="text-sm text-muted-foreground">User Type</p>
-                  <p className="font-semibold capitalize">{profile.user_type}</p>
+                  <p className="text-sm text-muted-foreground">{t('dashboard.userType')}</p>
+                  <p className="font-semibold capitalize">{t(`dashboard.${profile.user_type === 'farmer' ? 'farmer' : 'businessman'}`)}</p>
                 </div>
               </div>
 
               <div className="flex items-start space-x-4">
                 <Calendar className="w-5 h-5 text-muted-foreground mt-0.5" />
                 <div>
-                  <p className="text-sm text-muted-foreground">Member Since</p>
+                  <p className="text-sm text-muted-foreground">{t('dashboard.memberSince')}</p>
                   <p className="font-semibold">
                     {new Date(profile.created_at).toLocaleDateString('en-US', {
                       year: 'numeric',
@@ -447,7 +449,7 @@ const Dashboard = () => {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                   </svg>
                   <div>
-                    <p className="text-sm text-muted-foreground">City</p>
+                    <p className="text-sm text-muted-foreground">{t('dashboard.city')}</p>
                     <p className="font-semibold">{profile.city}</p>
                   </div>
                 </div>
@@ -459,7 +461,7 @@ const Dashboard = () => {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
                   <div>
-                    <p className="text-sm text-muted-foreground">State</p>
+                    <p className="text-sm text-muted-foreground">{t('dashboard.state')}</p>
                     <p className="font-semibold">{profile.state}</p>
                   </div>
                 </div>
@@ -471,7 +473,7 @@ const Dashboard = () => {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                   </svg>
                   <div>
-                    <p className="text-sm text-muted-foreground">Pincode</p>
+                    <p className="text-sm text-muted-foreground">{t('dashboard.pincode')}</p>
                     <p className="font-semibold">{profile.pincode}</p>
                   </div>
                 </div>
@@ -483,7 +485,7 @@ const Dashboard = () => {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 21h18M3 7v1a3 3 0 003 3h12a3 3 0 003-3V7m-18 0V5a2 2 0 012-2h14a2 2 0 012 2v2M3 7h18" />
                   </svg>
                   <div>
-                    <p className="text-sm text-muted-foreground">Soil Type</p>
+                    <p className="text-sm text-muted-foreground">{t('dashboard.soilType')}</p>
                     <p className="font-semibold">{profile.soil_type}</p>
                   </div>
                 </div>
@@ -493,7 +495,7 @@ const Dashboard = () => {
                 <div className="flex items-start space-x-4">
                   <Sprout className="w-5 h-5 text-muted-foreground mt-0.5" />
                   <div>
-                    <p className="text-sm text-muted-foreground">Major Crops</p>
+                    <p className="text-sm text-muted-foreground">{t('dashboard.majorCrops')}</p>
                     <p className="font-semibold">{profile.major_crops.join(', ')}</p>
                   </div>
                 </div>
@@ -505,7 +507,7 @@ const Dashboard = () => {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0h4M4 4l5 5m11-5h-4m4 0v4m0-4l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5v-4m0 4h-4m4 0l-5-5" />
                   </svg>
                   <div>
-                    <p className="text-sm text-muted-foreground">Field Size</p>
+                    <p className="text-sm text-muted-foreground">{t('dashboard.fieldSize')}</p>
                     <p className="font-semibold">{profile.field_size}</p>
                   </div>
                 </div>
@@ -517,13 +519,13 @@ const Dashboard = () => {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
                   <div>
-                    <p className="text-sm text-muted-foreground">Annual Income</p>
+                    <p className="text-sm text-muted-foreground">{t('dashboard.annualIncome')}</p>
                     <p className="font-semibold">
-                      {profile.annual_income === 'less-than-25000' && 'Less than ₹25,000'}
-                      {profile.annual_income === '25000-50000' && '₹25,000 - ₹50,000'}
-                      {profile.annual_income === '50000-75000' && '₹50,000 - ₹75,000'}
-                      {profile.annual_income === '75000-100000' && '₹75,000 - ₹1,00,000'}
-                      {profile.annual_income === 'more-than-100000' && 'More than ₹1,00,000'}
+                      {profile.annual_income === 'less-than-25000' && t('dashboard.incomeRanges.lessThan25000')}
+                      {profile.annual_income === '25000-50000' && t('dashboard.incomeRanges.25000to50000')}
+                      {profile.annual_income === '50000-75000' && t('dashboard.incomeRanges.50000to75000')}
+                      {profile.annual_income === '75000-100000' && t('dashboard.incomeRanges.75000to100000')}
+                      {profile.annual_income === 'more-than-100000' && t('dashboard.incomeRanges.moreThan100000')}
                     </p>
                   </div>
                 </div>
@@ -535,7 +537,7 @@ const Dashboard = () => {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
                   </svg>
                   <div>
-                    <p className="text-sm text-muted-foreground">Credit Score</p>
+                    <p className="text-sm text-muted-foreground">{t('dashboard.creditScore')}</p>
                     <p className="font-semibold">{profile.credit_score}/10</p>
                   </div>
                 </div>
@@ -544,10 +546,10 @@ const Dashboard = () => {
 
             <div className="mt-8 pt-6 border-t flex gap-4">
               <Button onClick={() => navigate('/marketplace')} className="flex-1">
-                Browse Marketplace
+                {t('nav.marketplace')}
               </Button>
               <Button onClick={() => navigate('/orders')} variant="outline" className="flex-1">
-                View Orders
+                {t('nav.orders')}
               </Button>
             </div>
           </Card>

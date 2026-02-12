@@ -15,7 +15,7 @@ const Search = () => {
   const { addToCart } = useAppContext();
   const { toast } = useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
-  
+
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState<any[]>([]);
   const [isListening, setIsListening] = useState(false);

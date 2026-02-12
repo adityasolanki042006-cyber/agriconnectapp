@@ -5,6 +5,7 @@ import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import marketplaceCrops from '@/assets/marketplace-crops.jpg';
 import freshTomatoes from '@/assets/fresh-tomatoes.jpg';
+import { useTranslation } from 'react-i18next';
 
 interface Product {
   id: number;
@@ -19,22 +20,28 @@ interface Product {
 }
 
 const MarketplaceSection = () => {
-  const [cart, setCart] = useState<{[key: number]: number}>({});
+  const { t } = useTranslation();
+  const [cart, setCart] = useState<{ [key: number]: number }>({});
   const [selectedCategory, setSelectedCategory] = useState('All');
 
   const products: Product[] = [
-    { id: 1, name: 'Fresh Tomatoes', price: 25, unit: 'kg', rating: 4.5, location: 'Punjab', trend: '+12%', image: freshTomatoes, category: 'Vegetables' },
-    { id: 2, name: 'Basmati Rice', price: 45, unit: 'kg', rating: 4.8, location: 'Haryana', trend: '+8%', image: '🌾', category: 'Grains' },
-    { id: 3, name: 'Fresh Onions', price: 18, unit: 'kg', rating: 4.2, location: 'Maharashtra', trend: '-5%', image: '🧅', category: 'Vegetables' },
-    { id: 4, name: 'Wheat Flour', price: 35, unit: 'kg', rating: 4.6, location: 'MP', trend: '+15%', image: '🌾', category: 'Grains' },
-    { id: 5, name: 'Green Chilies', price: 40, unit: 'kg', rating: 4.3, location: 'Karnataka', trend: '+20%', image: '🌶️', category: 'Spices' },
-    { id: 6, name: 'Potatoes', price: 22, unit: 'kg', rating: 4.1, location: 'UP', trend: '+5%', image: '🥔', category: 'Vegetables' },
+    { id: 1, name: t('marketplace.products.freshTomatoes') || 'Fresh Tomatoes', price: 25, unit: 'kg', rating: 4.5, location: 'Punjab', trend: '+12%', image: freshTomatoes, category: 'Vegetables' },
+    { id: 2, name: t('marketplace.products.basmatiRice') || 'Basmati Rice', price: 45, unit: 'kg', rating: 4.8, location: 'Haryana', trend: '+8%', image: '🌾', category: 'Grains' },
+    { id: 3, name: t('marketplace.products.freshOnions') || 'Fresh Onions', price: 18, unit: 'kg', rating: 4.2, location: 'Maharashtra', trend: '-5%', image: '🧅', category: 'Vegetables' },
+    { id: 4, name: t('marketplace.products.wheatFlour') || 'Wheat Flour', price: 35, unit: 'kg', rating: 4.6, location: 'MP', trend: '+15%', image: '🌾', category: 'Grains' },
+    { id: 5, name: t('marketplace.products.greenChilies') || 'Green Chilies', price: 40, unit: 'kg', rating: 4.3, location: 'Karnataka', trend: '+20%', image: '🌶️', category: 'Spices' },
+    { id: 6, name: t('marketplace.products.potatoes') || 'Potatoes', price: 22, unit: 'kg', rating: 4.1, location: 'UP', trend: '+5%', image: '🥔', category: 'Vegetables' },
   ];
 
   const categories = ['All', 'Vegetables', 'Grains', 'Spices', 'Fruits'];
 
-  const filteredProducts = selectedCategory === 'All' 
-    ? products 
+  const getCategoryTranslation = (category: string) => {
+    const key = category.toLowerCase();
+    return t(`marketplace.categories.${key}`, category);
+  }
+
+  const filteredProducts = selectedCategory === 'All'
+    ? products
     : products.filter(p => p.category === selectedCategory);
 
   const addToCart = (productId: number) => {
@@ -74,29 +81,28 @@ const MarketplaceSection = () => {
         <div className="text-center mb-16">
           <div className="inline-flex items-center px-4 py-2 bg-green-100 rounded-full mb-6">
             <ShoppingCart className="w-5 h-5 text-green-600 mr-2" />
-            <span className="text-green-700 font-medium">AgriConnect Marketplace</span>
+            <span className="text-green-700 font-medium">{t('marketplaceSection.badge')}</span>
           </div>
-          
+
           <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-6">
-            Fresh From Farm to Your Doorstep
+            {t('marketplaceSection.title')}
           </h2>
-          
+
           <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-8">
-            Buy directly from farmers at fair prices. Support local agriculture while getting fresh, 
-            quality produce with real-time pricing and tracking.
+            {t('marketplaceSection.description')}
           </p>
 
           {/* Hero Image */}
           <div className="relative rounded-2xl overflow-hidden shadow-xl mb-12">
-            <img 
-              src={marketplaceCrops} 
+            <img
+              src={marketplaceCrops}
               alt="Fresh agricultural marketplace with various crops"
               className="w-full h-64 object-cover"
             />
             <div className="absolute inset-0 bg-gradient-to-r from-green-500/20 to-transparent"></div>
             <div className="absolute bottom-4 left-4 bg-white/90 backdrop-blur-sm rounded-lg p-4">
-              <div className="text-sm font-medium text-gray-900">Live Market Status</div>
-              <div className="text-2xl font-bold text-green-600">2,847 Products Available</div>
+              <div className="text-sm font-medium text-gray-900">{t('marketplaceSection.liveMarketStatus')}</div>
+              <div className="text-2xl font-bold text-green-600">{t('marketplaceSection.productsAvailable')}</div>
             </div>
           </div>
         </div>
@@ -110,7 +116,7 @@ const MarketplaceSection = () => {
               onClick={() => setSelectedCategory(category)}
               className={selectedCategory === category ? "btn-hero" : ""}
             >
-              {category}
+              {getCategoryTranslation(category)}
             </Button>
           ))}
         </div>
@@ -124,8 +130,8 @@ const MarketplaceSection = () => {
                 <div className="flex items-start justify-between mb-4">
                   <div className="w-16 h-16 flex items-center justify-center rounded-lg overflow-hidden bg-gradient-to-br from-green-50 to-green-100">
                     {product.image && (product.image.startsWith('http') || product.image.startsWith('data:image')) ? (
-                      <img 
-                        src={product.image} 
+                      <img
+                        src={product.image}
                         alt={product.name}
                         className="w-full h-full object-cover"
                         onError={(e) => {
@@ -140,7 +146,7 @@ const MarketplaceSection = () => {
                       <span className="text-4xl">{product.image || '🌾'}</span>
                     )}
                   </div>
-                  <Badge 
+                  <Badge
                     variant={product.trend.startsWith('+') ? "default" : "secondary"}
                     className={product.trend.startsWith('+') ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"}
                   >
@@ -150,7 +156,7 @@ const MarketplaceSection = () => {
 
                 {/* Product Details */}
                 <h3 className="text-xl font-bold text-gray-900 mb-2">{product.name}</h3>
-                
+
                 <div className="flex items-center space-x-2 mb-3">
                   <div className="flex items-center">
                     <Star className="w-4 h-4 text-yellow-400 fill-current" />
@@ -171,7 +177,7 @@ const MarketplaceSection = () => {
                   </div>
                   <div className="flex items-center text-green-600">
                     <TrendingUp className="w-4 h-4 mr-1" />
-                    <span className="text-sm font-medium">Fair Price</span>
+                    <span className="text-sm font-medium">{t('marketplaceSection.fairPrice')}</span>
                   </div>
                 </div>
 
@@ -187,11 +193,11 @@ const MarketplaceSection = () => {
                       >
                         <Minus className="w-4 h-4" />
                       </Button>
-                      
+
                       <span className="font-semibold text-lg min-w-[2rem] text-center">
                         {cart[product.id]}
                       </span>
-                      
+
                       <Button
                         variant="outline"
                         size="sm"
@@ -208,7 +214,7 @@ const MarketplaceSection = () => {
                       size="sm"
                     >
                       <Plus className="w-4 h-4 mr-2" />
-                      Add to Cart
+                      {t('marketplaceSection.addToCart')}
                     </Button>
                   )}
                 </div>
@@ -221,17 +227,17 @@ const MarketplaceSection = () => {
         {getTotalItems() > 0 && (
           <div className="fixed bottom-6 right-6 bg-white rounded-2xl shadow-2xl border p-6 z-40 min-w-[300px]">
             <div className="flex items-center justify-between mb-4">
-              <h4 className="text-lg font-bold text-gray-900">Your Cart</h4>
+              <h4 className="text-lg font-bold text-gray-900">{t('marketplaceSection.yourCart')}</h4>
               <Badge className="bg-green-100 text-green-700">
-                {getTotalItems()} items
+                {getTotalItems()} {t('marketplaceSection.items')}
               </Badge>
             </div>
-            
+
             <div className="space-y-2 mb-4 max-h-32 overflow-y-auto">
               {Object.entries(cart).map(([productId, quantity]) => {
                 const product = products.find(p => p.id === parseInt(productId));
                 if (!product) return null;
-                
+
                 return (
                   <div key={productId} className="flex justify-between items-center text-sm">
                     <span>{product.name} x{quantity}</span>
@@ -240,15 +246,15 @@ const MarketplaceSection = () => {
                 );
               })}
             </div>
-            
+
             <div className="border-t pt-4">
               <div className="flex justify-between items-center mb-4">
-                <span className="text-lg font-bold">Total: ₹{getTotalPrice()}</span>
+                <span className="text-lg font-bold">{t('marketplaceSection.total')}: ₹{getTotalPrice()}</span>
               </div>
-              
+
               <Button className="btn-hero w-full">
                 <ShoppingCart className="w-5 h-5 mr-2" />
-                Proceed to Checkout
+                {t('marketplaceSection.proceedToCheckout')}
               </Button>
             </div>
           </div>
@@ -260,24 +266,24 @@ const MarketplaceSection = () => {
             <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
               <ShoppingCart className="w-8 h-8 text-green-600" />
             </div>
-            <h4 className="font-bold text-gray-900 mb-2">Direct from Farmers</h4>
-            <p className="text-gray-600">No middlemen, fair prices for everyone</p>
+            <h4 className="font-bold text-gray-900 mb-2">{t('marketplaceSection.directFromFarmers')}</h4>
+            <p className="text-gray-600">{t('marketplaceSection.directFromFarmersDesc')}</p>
           </div>
-          
+
           <div className="text-center">
             <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
               <TrendingUp className="w-8 h-8 text-blue-600" />
             </div>
-            <h4 className="font-bold text-gray-900 mb-2">Real-time Pricing</h4>
-            <p className="text-gray-600">Always updated market rates</p>
+            <h4 className="font-bold text-gray-900 mb-2">{t('marketplaceSection.realTimePricing')}</h4>
+            <p className="text-gray-600">{t('marketplaceSection.realTimePricingDesc')}</p>
           </div>
-          
+
           <div className="text-center">
             <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
               <Star className="w-8 h-8 text-purple-600" />
             </div>
-            <h4 className="font-bold text-gray-900 mb-2">Quality Guaranteed</h4>
-            <p className="text-gray-600">Verified sellers, fresh produce</p>
+            <h4 className="font-bold text-gray-900 mb-2">{t('marketplaceSection.qualityGuaranteed')}</h4>
+            <p className="text-gray-600">{t('marketplaceSection.qualityGuaranteedDesc')}</p>
           </div>
         </div>
       </div>

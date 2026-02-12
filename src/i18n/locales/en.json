@@ -46,10 +46,6 @@
     "feature3": "AI-Powered Insights",
     "feature4": "Real-time Updates"
   },
-  "marketplace": {
-    "title": "Marketplace",
-    "description": "Browse and purchase fresh produce directly from farmers"
-  },
   "fertilizer": {
     "title": "Fertilizer Friend",
     "description": "Get AI-powered fertilizer recommendations for your crops"
@@ -107,6 +103,14 @@
       "pulses": "Pulses",
       "dairy": "Dairy",
       "poultry": "Poultry"
+    },
+    "products": {
+      "freshTomatoes": "Fresh Tomatoes",
+      "basmatiRice": "Basmati Rice",
+      "freshOnions": "Fresh Onions",
+      "wheatFlour": "Wheat Flour",
+      "greenChilies": "Green Chilies",
+      "potatoes": "Potatoes"
     }
   },
   "dashboard": {
@@ -138,6 +142,124 @@
       "50000to75000": "₹50,000 - ₹75,000",
       "75000to100000": "₹75,000 - ₹1,00,000",
       "moreThan100000": "More than ₹1,00,000"
+    },
+    "city": "City",
+    "state": "State",
+    "pincode": "Pincode"
+  },
+  "marketplaceSection": {
+    "badge": "AgriConnect Marketplace",
+    "title": "Fresh From Farm to Your Doorstep",
+    "description": "Buy directly from farmers at fair prices. Support local agriculture while getting fresh, quality produce with real-time pricing and tracking.",
+    "liveMarketStatus": "Live Market Status",
+    "productsAvailable": "2,847 Products Available",
+    "fairPrice": "Fair Price",
+    "addToCart": "Add to Cart",
+    "yourCart": "Your Cart",
+    "items": "items",
+    "total": "Total",
+    "proceedToCheckout": "Proceed to Checkout",
+    "directFromFarmers": "Direct from Farmers",
+    "directFromFarmersDesc": "No middlemen, fair prices for everyone",
+    "realTimePricing": "Real-time Pricing",
+    "realTimePricingDesc": "Always updated market rates",
+    "qualityGuaranteed": "Quality Guaranteed",
+    "qualityGuaranteedDesc": "Verified sellers, fresh produce"
+  },
+  "featuresSection": {
+    "badge": "200+ Features",
+    "title": "Everything Farmers Need in One App",
+    "description": "From AI-powered crop management to direct marketplace access, AgriConnect provides comprehensive tools to modernize farming and maximize profits.",
+    "features": "Features",
+    "advancedTools": "Advanced tools available",
+    "categories": {
+      "aiFeatures": "AI Features",
+      "coreFeatures": "Core Features",
+      "businessTools": "Business Tools",
+      "community": "Community"
+    },
+    "aiCropDisease": {
+      "title": "AI Crop Disease Detection",
+      "description": "Upload crop photos and get instant disease diagnosis with treatment recommendations."
+    },
+    "weatherBased": {
+      "title": "Weather-Based Farming",
+      "description": "AI-powered weather analysis and farming suggestions for optimal yield."
+    },
+    "multilingualChatbot": {
+      "title": "Multilingual AI Chatbot",
+      "description": "Voice and text support in Hindi, English, and regional languages."
+    },
+    "stateWisePricing": {
+      "title": "State-wise Pricing",
+      "description": "Real-time crop prices across all Indian states and major mandis."
+    },
+    "digitalWallet": {
+      "title": "Digital Wallet & UPI",
+      "description": "Secure payments with integrated digital wallet and UPI support."
+    },
+    "liveOrderTracking": {
+      "title": "Live Order Tracking",
+      "description": "Track your orders from farm to doorstep with real-time updates."
+    },
+    "pestOutbreakMaps": {
+      "title": "Pest Outbreak Maps",
+      "description": "Interactive maps showing pest outbreaks and prevention measures."
+    },
+    "yieldForecasting": {
+      "title": "Yield Forecasting",
+      "description": "AI predicts crop yield based on weather, soil, and farming practices."
+    },
+    "farmerTrading": {
+      "title": "Farmer-to-Farmer Trading",
+      "description": "Direct trading between farmers for seeds, equipment, and knowledge."
+    },
+    "cropInsurance": {
+      "title": "Crop Insurance Advisor",
+      "description": "AI-powered insurance recommendations and claim assistance."
+    },
+    "multiLanguage": {
+      "title": "Multi-language Support",
+      "description": "Available in 12+ Indian languages with voice recognition."
+    },
+    "farmSimulation": {
+      "title": "Farm Simulation (Digital Twin)",
+      "description": "Virtual farm modeling to optimize resources and maximize profits."
+    },
+    "advancedAI": {
+      "title": "Advanced AI-Powered Features",
+      "subtitle": "Cutting-edge technology that brings the future of farming to your fingertips",
+      "smartCrop": {
+        "title": "Smart Crop Analysis",
+        "desc": "AI analyzes soil conditions, weather patterns, and crop health to provide personalized recommendations for maximum yield."
+      },
+      "precisionMaps": {
+        "title": "Precision Farming Maps",
+        "desc": "Satellite imagery and IoT sensors create detailed farm maps for precise resource allocation and monitoring."
+      },
+      "automatedInsights": {
+        "title": "Automated Insights",
+        "desc": "Real-time notifications about market opportunities, weather alerts, and optimal farming actions."
+      }
+    },
+    "comingSoon": {
+      "title": "Coming Soon",
+      "globalMarket": {
+        "title": "Global Marketplace",
+        "desc": "Export Indian crops worldwide"
+      },
+      "automatedFarming": {
+        "title": "Automated Farming",
+        "desc": "AI-controlled irrigation & harvesting"
+      },
+      "droneMonitoring": {
+        "title": "Drone Monitoring",
+        "desc": "Aerial crop surveillance"
+      },
+      "carbonCredits": {
+        "title": "Carbon Credits",
+        "desc": "Earn from sustainable practices"
+      }
     }
   },
   "about": {
@@ -167,7 +289,13 @@
     "emailAddress": "Email Address",
     "subject": "Subject",
     "yourMessage": "Your Message",
-    "send": "Send Message"
+    "send": "Send Message",
+    "successMessage": "Thank you for your message! We will get back to you soon.",
+    "awards": {
+      "award1": "🏆 Best AgriTech Startup 2024 - India AgriTech Awards",
+      "award2": "🌟 Top 10 Social Impact Startups - TechCrunch India",
+      "award3": "🎯 Farmers' Choice Award - National Farmers Federation"
+    }
   },
   "orders": {
     "title": "Your Orders",
@@ -340,6 +468,17 @@
     "search": "Search",
     "filter": "Filter",
     "sort": "Sort",
-    "viewAll": "View All"
+    "viewAll": "View All",
+    "city": "City",
+    "state": "State",
+    "pincode": "Pincode",
+    "soilType": "Soil Type",
+    "majorCrops": "Major Crops",
+    "fieldSize": "Field Size",
+    "annualIncome": "Annual Income",
+    "creditScore": "Credit Score",
+    "completeProfile": "Complete Profile",
+    "saveProfile": "Saving Profile...",
+    "selectInfo": "Select info"
   }
 }

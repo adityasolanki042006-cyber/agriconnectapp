@@ -1,12 +1,12 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { 
-  Package, 
-  Search, 
-  Filter, 
-  Calendar, 
-  DollarSign, 
-  TrendingDown, 
+import {
+  Package,
+  Search,
+  Filter,
+  Calendar,
+  DollarSign,
+  TrendingDown,
   TrendingUp,
   ArrowUpDown,
   Eye,
@@ -32,7 +32,10 @@ import {
   TableRow,
 } from '@/components/ui/table';
 
+import { useTranslation } from 'react-i18next';
+
 const OrderHistory = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { orders, loadOrders } = useAppContext();
   const { user, loading: authLoading } = useAuth();
@@ -118,7 +121,7 @@ const OrderHistory = () => {
 
     // Search filter
     if (searchTerm) {
-      filtered = filtered.filter(order => 
+      filtered = filtered.filter(order =>
         order.order_number.toLowerCase().includes(searchTerm.toLowerCase()) ||
         order.tracking_id.toLowerCase().includes(searchTerm.toLowerCase()) ||
         order.items?.some(item => item.name.toLowerCase().includes(searchTerm.toLowerCase()))
@@ -132,24 +135,24 @@ const OrderHistory = () => {
 
     // Date range filter
     if (dateFrom) {
-      filtered = filtered.filter(order => 
+      filtered = filtered.filter(order =>
         new Date(order.created_at) >= new Date(dateFrom)
       );
     }
     if (dateTo) {
-      filtered = filtered.filter(order => 
+      filtered = filtered.filter(order =>
         new Date(order.created_at) <= new Date(dateTo)
       );
     }
 
     // Amount range filter
     if (minAmount) {
-      filtered = filtered.filter(order => 
+      filtered = filtered.filter(order =>
         Number(order.total_amount) >= Number(minAmount)
       );
     }
     if (maxAmount) {
-      filtered = filtered.filter(order => 
+      filtered = filtered.filter(order =>
         Number(order.total_amount) <= Number(maxAmount)
       );
     }
@@ -157,7 +160,7 @@ const OrderHistory = () => {
     // Sort
     filtered.sort((a, b) => {
       let comparison = 0;
-      
+
       switch (sortBy) {
         case 'date':
           comparison = new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
@@ -247,16 +250,16 @@ const OrderHistory = () => {
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
       <Navigation />
       <FloatingAIChat />
-      
+
       <div className="pt-20 pb-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Header */}
           <div className="mb-8">
             <h1 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
-              Order History
+              {t('orderHistory.title')}
             </h1>
             <p className="text-xl text-gray-600">
-              Complete history of all your orders with advanced filtering and analytics
+              {t('orderHistory.subtitle')}
             </p>
           </div>
 
@@ -265,7 +268,7 @@ const OrderHistory = () => {
             <Card className="p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-600">Total Orders</p>
+                  <p className="text-sm text-gray-600">{t('orderHistory.totalOrders')}</p>
                   <p className="text-2xl font-bold text-gray-900">{stats.total}</p>
                 </div>
                 <Package className="w-8 h-8 text-blue-600" />
@@ -274,7 +277,7 @@ const OrderHistory = () => {
             <Card className="p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-600">Total Spent</p>
+                  <p className="text-sm text-gray-600">{t('orderHistory.totalSpent')}</p>
                   <p className="text-2xl font-bold text-gray-900">₹{stats.totalSpent.toFixed(2)}</p>
                 </div>
                 <DollarSign className="w-8 h-8 text-green-600" />
@@ -283,7 +286,7 @@ const OrderHistory = () => {
             <Card className="p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-600">Avg Order Value</p>
+                  <p className="text-sm text-gray-600">{t('orderHistory.avgOrderValue')}</p>
                   <p className="text-2xl font-bold text-gray-900">₹{stats.avgOrder.toFixed(2)}</p>
                 </div>
                 <TrendingUp className="w-8 h-8 text-purple-600" />
@@ -292,7 +295,7 @@ const OrderHistory = () => {
             <Card className="p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-600">Delivered</p>
+                  <p className="text-sm text-gray-600">{t('orderHistory.sortOptions.status')}</p>
                   <p className="text-2xl font-bold text-gray-900">{stats.statusCounts['delivered'] || 0}</p>
                 </div>
                 <TrendingDown className="w-8 h-8 text-orange-600" />
@@ -305,21 +308,21 @@ const OrderHistory = () => {
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-lg font-semibold text-gray-900 flex items-center">
                 <Filter className="w-5 h-5 mr-2" />
-                Filters & Search
+                {t('orderHistory.filtersSearch')}
               </h2>
               <Button variant="outline" size="sm" onClick={clearFilters}>
-                Clear All
+                {t('orderHistory.clearAll')}
               </Button>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
               {/* Search */}
               <div>
-                <Label>Search</Label>
+                <Label>{t('orderHistory.search')}</Label>
                 <div className="relative">
                   <Search className="absolute left-3 top-3 w-4 h-4 text-gray-400" />
                   <Input
-                    placeholder="Order #, tracking, product..."
+                    placeholder={t('orderHistory.searchPlaceholder')}
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     className="pl-10"
@@ -329,25 +332,25 @@ const OrderHistory = () => {
 
               {/* Status Filter */}
               <div>
-                <Label>Status</Label>
+                <Label>{t('orderHistory.status')}</Label>
                 <Select value={statusFilter} onValueChange={setStatusFilter}>
                   <SelectTrigger>
-                    <SelectValue placeholder="All statuses" />
+                    <SelectValue placeholder={t('orderHistory.allStatuses')} />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="all">All Statuses</SelectItem>
-                    <SelectItem value="pending">Pending</SelectItem>
-                    <SelectItem value="processing">Processing</SelectItem>
-                    <SelectItem value="shipped">Shipped</SelectItem>
-                    <SelectItem value="delivered">Delivered</SelectItem>
-                    <SelectItem value="cancelled">Cancelled</SelectItem>
+                    <SelectItem value="all">{t('orderHistory.allStatuses')}</SelectItem>
+                    <SelectItem value="pending">{t('orders.statuses.pending')}</SelectItem>
+                    <SelectItem value="processing">{t('orders.statuses.processing')}</SelectItem>
+                    <SelectItem value="shipped">{t('orders.statuses.shipped')}</SelectItem>
+                    <SelectItem value="delivered">{t('orders.statuses.delivered')}</SelectItem>
+                    <SelectItem value="cancelled">{t('orders.statuses.cancelled')}</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
 
               {/* Date From */}
               <div>
-                <Label>Date From</Label>
+                <Label>{t('orderHistory.dateFrom')}</Label>
                 <Input
                   type="date"
                   value={dateFrom}
@@ -357,7 +360,7 @@ const OrderHistory = () => {
 
               {/* Date To */}
               <div>
-                <Label>Date To</Label>
+                <Label>{t('orderHistory.dateTo')}</Label>
                 <Input
                   type="date"
                   value={dateTo}
@@ -367,7 +370,7 @@ const OrderHistory = () => {
 
               {/* Min Amount */}
               <div>
-                <Label>Min Amount (₹)</Label>
+                <Label>{t('orderHistory.minAmount')}</Label>
                 <Input
                   type="number"
                   placeholder="0"
@@ -378,7 +381,7 @@ const OrderHistory = () => {
 
               {/* Max Amount */}
               <div>
-                <Label>Max Amount (₹)</Label>
+                <Label>{t('orderHistory.maxAmount')}</Label>
                 <Input
                   type="number"
                   placeholder="10000"
@@ -389,42 +392,41 @@ const OrderHistory = () => {
 
               {/* Sort By */}
               <div>
-                <Label>Sort By</Label>
+                <Label>{t('orderHistory.sortBy')}</Label>
                 <Select value={sortBy} onValueChange={(value: any) => setSortBy(value)}>
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="date">Date</SelectItem>
-                    <SelectItem value="amount">Amount</SelectItem>
-                    <SelectItem value="status">Status</SelectItem>
+                    <SelectItem value="date">{t('orderHistory.sortOptions.date')}</SelectItem>
+                    <SelectItem value="amount">{t('orderHistory.sortOptions.amount')}</SelectItem>
+                    <SelectItem value="status">{t('orderHistory.sortOptions.status')}</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
 
               {/* Sort Order */}
               <div>
-                <Label>Sort Order</Label>
+                <Label>{t('orderHistory.sortOrder')}</Label>
                 <Button
                   variant="outline"
                   className="w-full justify-start"
                   onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
                 >
                   <ArrowUpDown className="w-4 h-4 mr-2" />
-                  {sortOrder === 'asc' ? 'Ascending' : 'Descending'}
+                  {sortOrder === 'asc' ? t('orderHistory.ascending') : t('orderHistory.descending')}
                 </Button>
               </div>
             </div>
           </Card>
 
-          {/* Actions Bar */}
           <div className="flex justify-between items-center mb-4">
             <p className="text-sm text-gray-600">
-              Showing {filteredAndSortedOrders.length} of {allOrders.length} orders
+              {t('orderHistory.showing')} {filteredAndSortedOrders.length} {t('orderHistory.of')} {allOrders.length} {t('orderHistory.orders')}
             </p>
             <Button variant="outline" onClick={exportToCSV}>
               <Download className="w-4 h-4 mr-2" />
-              Export CSV
+              {t('orderHistory.exportCSV')}
             </Button>
           </div>
 
@@ -434,13 +436,13 @@ const OrderHistory = () => {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Order Number</TableHead>
-                    <TableHead>Date</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Items</TableHead>
-                    <TableHead>Amount</TableHead>
-                    <TableHead>Tracking</TableHead>
-                    <TableHead className="text-right">Actions</TableHead>
+                    <TableHead>{t('orders.orderNumber')}</TableHead>
+                    <TableHead>{t('orderHistory.date')}</TableHead>
+                    <TableHead>{t('orderHistory.status')}</TableHead>
+                    <TableHead>{t('orders.items')}</TableHead>
+                    <TableHead>{t('orderHistory.amount')}</TableHead>
+                    <TableHead>{t('orderHistory.tracking')}</TableHead>
+                    <TableHead className="text-right">{t('orderHistory.actions')}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -448,7 +450,7 @@ const OrderHistory = () => {
                     <TableRow>
                       <TableCell colSpan={7} className="text-center py-12">
                         <Package className="w-12 h-12 text-gray-400 mx-auto mb-3" />
-                        <p className="text-gray-600">No orders found matching your filters</p>
+                        <p className="text-gray-600">{t('orderHistory.noOrdersFound')}</p>
                       </TableCell>
                     </TableRow>
                   ) : (
@@ -463,12 +465,12 @@ const OrderHistory = () => {
                         </TableCell>
                         <TableCell>
                           <Badge className={getStatusColor(order.status)}>
-                            {order.status}
+                            {t(`orders.statuses.${order.status}`)}
                           </Badge>
                         </TableCell>
                         <TableCell>
                           <div className="text-sm text-gray-600">
-                            {order.items?.length || 0} items
+                            {order.items?.length || 0} {t('orders.items')}
                           </div>
                         </TableCell>
                         <TableCell className="font-semibold">
@@ -484,7 +486,7 @@ const OrderHistory = () => {
                             onClick={() => navigate('/orders')}
                           >
                             <Eye className="w-4 h-4 mr-2" />
-                            View
+                            {t('orderHistory.viewDetails')}
                           </Button>
                         </TableCell>
                       </TableRow>

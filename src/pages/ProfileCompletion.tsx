@@ -18,7 +18,7 @@ const ProfileCompletion = () => {
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [userType, setUserType] = useState<string>('');
-  
+
   const [farmerData, setFarmerData] = useState({
     city: '',
     state: '',
@@ -93,7 +93,7 @@ const ProfileCompletion = () => {
 
   const handleFarmerSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!farmerData.city || !farmerData.state || !farmerData.pincode || !farmerData.soil_type || !farmerData.major_crops || !farmerData.field_size || !farmerData.annual_income || !farmerData.credit_score) {
       toast({
         title: 'Incomplete Form',
@@ -151,7 +151,7 @@ const ProfileCompletion = () => {
 
   const handleBusinessmanSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!businessmanData.city || !businessmanData.state || !businessmanData.pincode || !businessmanData.annual_income || !businessmanData.credit_score) {
       toast({
         title: 'Incomplete Form',
