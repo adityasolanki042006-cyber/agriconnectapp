@@ -65,8 +65,8 @@ const Footer = () => {
             <p className="text-gray-300 mb-6 leading-relaxed">{t('footerSection.companyDesc')}</p>
             <div className="space-y-3">
               <div className="flex items-center space-x-3"><MapPin className="w-5 h-5 text-green-400" /><span className="text-gray-300">Delhi, India</span></div>
-              <div className="flex items-center space-x-3"><Phone className="w-5 h-5 text-green-400" /><span className="text-gray-300">+91 98765 43210</span></div>
-              <div className="flex items-center space-x-3"><Mail className="w-5 h-5 text-green-400" /><span className="text-gray-300">support@agriconnect.in</span></div>
+              <div className="flex items-center space-x-3"><Phone className="w-5 h-5 text-green-400" /><a href="tel:+917828988589" className="text-gray-300 hover:text-white transition-colors">+91 7828988589</a></div>
+              <div className="flex items-center space-x-3"><Mail className="w-5 h-5 text-green-400" /><a href="mailto:official.agriconnect@gmail.com" className="text-gray-300 hover:text-white transition-colors">official.agriconnect@gmail.com</a></div>
             </div>
           </div>
           <div>

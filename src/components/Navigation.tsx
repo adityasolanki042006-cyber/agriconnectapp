@@ -40,6 +40,8 @@ const Navigation = () => {
     { name: t('nav.fertilizerFriend'), href: '/fertilizer' },
     { name: t('nav.search'), href: '/search' },
     { name: t('nav.aboutUs'), href: '/about' },
+    { name: t('nav.contactSupport'), href: '/contact-support' },
+    { name: t('nav.bio'), href: dashboardHref },
     { name: t('nav.bio'), href: dashboardHref },
   ];
 

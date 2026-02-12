@@ -23,6 +23,7 @@ import BusinessDashboard from "./pages/BusinessDashboard";
 import Admin from "./pages/Admin";
 import OrderHistory from "./pages/OrderHistory";
 import ProfileCompletion from "./pages/ProfileCompletion";
+import ContactSupport from "./pages/ContactSupport";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -43,6 +44,7 @@ const App = () => (
             <Route path="/vendors" element={<Vendors />} />
             <Route path="/fertilizer" element={<FertilizerFriend />} />
             <Route path="/about" element={<About />} />
+            <Route path="/contact-support" element={<ContactSupport />} />
             <Route path="/search" element={<Search />} />
             <Route path="/checkout" element={<ProtectedRoute><Checkout /></ProtectedRoute>} />
             <Route path="/usertype" element={<UserType />} />
