@@ -23,6 +23,7 @@ import BusinessDashboard from "./pages/BusinessDashboard";
 import Admin from "./pages/Admin";
 import OrderHistory from "./pages/OrderHistory";
 import ProfileCompletion from "./pages/ProfileCompletion";
+import ContactSupport from "./pages/ContactSupport";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
