@@ -44,6 +44,7 @@ const App = () => (
             <Route path="/vendors" element={<Vendors />} />
             <Route path="/fertilizer" element={<FertilizerFriend />} />
             <Route path="/about" element={<About />} />
+            <Route path="/contact-support" element={<ContactSupport />} />
             <Route path="/search" element={<Search />} />
             <Route path="/checkout" element={<ProtectedRoute><Checkout /></ProtectedRoute>} />
             <Route path="/usertype" element={<UserType />} />
