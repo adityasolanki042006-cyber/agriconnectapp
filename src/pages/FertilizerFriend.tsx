@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Beaker, Leaf, Plus, Minus, Star, Bot, Search, Filter, Play } from 'lucide-react';
+import { Beaker, Leaf, Plus, Minus, Star, Bot, Search, Filter, Play, Video } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -404,6 +404,50 @@ const FertilizerFriend = () => {
               </div>
             </div>
           )}
+
+          {/* Video Tutorials Section */}
+          <div className="mt-12 mb-12">
+            <div className="text-center mb-8">
+              <div className="inline-flex items-center px-4 py-2 bg-red-50 rounded-full mb-4">
+                <Play className="w-5 h-5 text-red-600 mr-2" />
+                <span className="text-red-700 font-medium">Video Tutorials</span>
+              </div>
+              <h2 className="text-3xl font-bold text-gray-900 mb-3">Learn Fertilizer Application Techniques</h2>
+              <p className="text-gray-600 max-w-2xl mx-auto">Watch expert tutorials on soil testing, composting, fertilizer methods, and more</p>
+            </div>
+
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {[
+                { id: '6xwK0uLbn4U', title: 'Fertilizer Application Methods', desc: 'Learn different techniques for applying fertilizers effectively on your farm' },
+                { id: 'np9RbtHX6mA', title: 'Soil Testing Made Easy', desc: 'Understand soil test reports and how to amend soil for better crop nutrition' },
+                { id: 'HYrkcfE62Pg', title: 'Interpret Soil Test Results', desc: 'Learn to read your soil lab results and buy the right fertilizer' },
+                { id: 'GP7bliTR1HI', title: 'Balanced NPK 20-20-20 Application', desc: 'See the effects of balanced NPK fertilizer on vegetable crops' },
+                { id: 'k13UimwG2LQ', title: '4 Easy Composting Methods', desc: 'Transform waste into rich mulch and potting mix with no-dig techniques' },
+                { id: 'fFIXcszNJSY', title: 'Organic Compost Making', desc: 'Dr. Elaine Ingham shows easy science of creating clean organic compost' },
+                { id: 'S8M_6oU4C28', title: 'How to Collect Soil Samples', desc: 'Step-by-step guide to collecting representative soil samples at home' },
+                { id: 'aC1B2ePY3Ag', title: 'Easy Guide to Fertilizing Tomatoes', desc: 'How often to feed tomato plants and what to use for best results' },
+                { id: 'JG_TbQKhFBE', title: 'Accurate Dry Fertilizer Application', desc: 'Tips to minimize yield loss with proper dry fertilizer placement' },
+              ].map((video) => (
+                <Card key={video.id} className="overflow-hidden hover:shadow-xl transition-all duration-300">
+                  <div className="aspect-video">
+                    <iframe
+                      width="100%"
+                      height="100%"
+                      src={`https://www.youtube.com/embed/${video.id}`}
+                      title={video.title}
+                      frameBorder="0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                    />
+                  </div>
+                  <div className="p-4">
+                    <h4 className="font-bold text-gray-900 mb-1">{video.title}</h4>
+                    <p className="text-sm text-gray-600">{video.desc}</p>
+                  </div>
+                </Card>
+              ))}
+            </div>
+          </div>
 
           {/* Benefits Section */}
           <div className="mt-16 grid md:grid-cols-3 gap-8">
