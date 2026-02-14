@@ -21,17 +21,24 @@ serve(async (req) => {
       );
     }
 
+    const OPENAI_API_KEY = Deno.env.get('OPENAI_API_KEY');
     const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
-    if (!LOVABLE_API_KEY) {
+    
+    const useOpenAI = !!OPENAI_API_KEY;
+    const apiKey = useOpenAI ? OPENAI_API_KEY : LOVABLE_API_KEY;
+    const apiUrl = useOpenAI 
+      ? 'https://api.openai.com/v1/chat/completions'
+      : 'https://ai.gateway.lovable.dev/v1/chat/completions';
+    const modelName = useOpenAI ? 'gpt-4o' : 'google/gemini-2.5-flash';
+    
+    if (!apiKey) {
       return new Response(
         JSON.stringify({ error: 'AI service not configured' }), 
         { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
     
-    const apiKey = LOVABLE_API_KEY;
-    const apiUrl = 'https://ai.gateway.lovable.dev/v1/chat/completions';
-    const modelName = 'google/gemini-2.5-flash';
+    console.log('Using AI provider:', useOpenAI ? 'OpenAI' : 'Lovable AI');
 
     // Initialize Supabase
     const authHeader = req.headers.get('authorization');
