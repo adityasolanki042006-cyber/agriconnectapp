@@ -608,7 +608,7 @@ const FertilizerFriend = () => {
               </div>
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {[
-                  { id: 'S5eaMZGE3YU', title: 'ਕਣਕ ਵਿੱਚ ਖਾਦ ਦੀ ਵਰਤੋਂ', desc: 'ਕਣਕ ਦੀ ਫਸਲ ਵਿੱਚ ਪਹਿਲੀ ਸਿੰਚਾਈ ਤੇ ਕਿਹੜੀ ਖਾਦ ਪਾਉਣੀ ਚਾਹੀਦੀ ਹੈ' },
+                  { id: 'ZRfCnSoFL5w', title: 'ਸਬਜ਼ੀਆਂ ਲਈ ਘਰੇਲੂ ਖਾਦ', desc: 'ਸਾਰੀਆਂ ਸਬਜ਼ੀਆਂ ਲਈ ਇੱਕ ਸ਼ਕਤੀਸ਼ਾਲੀ ਘਰੇਲੂ ਖਾਦ ਬਣਾਉਣ ਦਾ ਤਰੀਕਾ' },
                   { id: '8cgLpLLa8lg', title: 'ਫੁੱਲਾਂ ਦੀ ਖੇਤੀ', desc: 'ਪੰਜਾਬ ਵਿੱਚ ਫੁੱਲਾਂ ਦੀ ਖੇਤੀ ਅਤੇ ਖਾਦ ਪ੍ਰਬੰਧਨ ਬਾਰੇ ਜਾਣਕਾਰੀ' },
                   { id: 'x8FGLdBuTqA', title: 'ਕਣਕ ਦੀ ਵੱਧ ਪੈਦਾਵਾਰ ਲਈ ਖਾਦ', desc: 'ਕਣਕ ਦੀ ਫਸਲ ਤੋਂ ਵੱਧ ਤੋਂ ਵੱਧ ਝਾੜ ਲੈਣ ਲਈ ਖਾਦ ਯੋਜਨਾ' },
                 ].map((video) => (
