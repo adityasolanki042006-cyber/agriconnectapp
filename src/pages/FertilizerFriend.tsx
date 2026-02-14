@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Beaker, Leaf, Plus, Minus, Star, Bot, Search, Filter } from 'lucide-react';
+import { Beaker, Leaf, Plus, Minus, Star, Bot, Search, Filter, Play } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -22,6 +22,7 @@ interface Fertilizer {
   brand: string;
   description: string;
   image: string;
+  videoId: string;
 }
 
 const FertilizerFriend = () => {
@@ -44,7 +45,8 @@ const FertilizerFriend = () => {
       organic: false,
       brand: 'FertiFarm',
       description: 'High-grade NPK fertilizer for cereal crops',
-      image: '🧪'
+      image: '🧪',
+      videoId: 'QLzo4rPyBgg'
     },
     {
       id: 102,
@@ -58,7 +60,8 @@ const FertilizerFriend = () => {
       organic: true,
       brand: 'GreenGrow',
       description: 'Natural organic compost enriched with micronutrients',
-      image: '🌱'
+      image: '🌱',
+      videoId: 'eSfqxlGGSFE'
     },
     {
       id: 103,
@@ -72,7 +75,8 @@ const FertilizerFriend = () => {
       organic: false,
       brand: 'VeggiMax',
       description: 'Specially formulated for nightshade vegetables',
-      image: '🍅'
+      image: '🍅',
+      videoId: 'bGCqIB_pDdY'
     },
     {
       id: 104,
@@ -86,7 +90,8 @@ const FertilizerFriend = () => {
       organic: true,
       brand: 'BioPulse',
       description: 'Organic phosphate booster for pulse crops',
-      image: '🫘'
+      image: '🫘',
+      videoId: 'S7HdFsAjKBk'
     },
     {
       id: 105,
@@ -100,7 +105,8 @@ const FertilizerFriend = () => {
       organic: false,
       brand: 'RiceMax Pro',
       description: 'Nitrogen-rich formula for paddy fields',
-      image: '🌾'
+      image: '🌾',
+      videoId: '2b2tW0JDwKo'
     },
     {
       id: 106,
@@ -114,7 +120,8 @@ const FertilizerFriend = () => {
       organic: true,
       brand: 'MicroBoost',
       description: 'Essential micronutrients for all crop types',
-      image: '⚗️'
+      image: '⚗️',
+      videoId: 'FnDCRPQmfRg'
     }
   ];
 
@@ -290,7 +297,20 @@ const FertilizerFriend = () => {
                   {/* Fertilizer Details */}
                   <h3 className="text-lg font-bold text-gray-900 mb-2">{fertilizer.name}</h3>
                   <p className="text-sm text-gray-600 mb-3">{fertilizer.description}</p>
-                  
+
+                  {/* YouTube Video */}
+                  <div className="mb-4 rounded-lg overflow-hidden">
+                    <iframe
+                      width="100%"
+                      height="180"
+                      src={`https://www.youtube.com/embed/${fertilizer.videoId}`}
+                      title={`How to apply ${fertilizer.name}`}
+                      frameBorder="0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                      className="rounded-lg"
+                    />
+                  </div>
                   <div className="mb-3">
                     <div className="text-sm text-gray-600 mb-1">Brand: {fertilizer.brand}</div>
                     <div className="text-sm text-gray-600 mb-1">NPK Ratio: {fertilizer.npkRatio}</div>
