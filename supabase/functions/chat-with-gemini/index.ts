@@ -165,6 +165,27 @@ serve(async (req) => {
             required: ["route"]
           }
         }
+      },
+      {
+        type: "function",
+        function: {
+          name: "youtube_search",
+          description: "Search YouTube for farming, agriculture, fertilizer, and crop-related tutorial videos. Can filter by language.",
+          parameters: {
+            type: "object",
+            properties: {
+              query: {
+                type: "string",
+                description: "Search query (e.g., 'organic composting', 'NPK fertilizer application', 'drip irrigation')"
+              },
+              language: {
+                type: "string",
+                description: "Preferred language (e.g., 'English', 'Hindi', 'Telugu', 'Tamil')"
+              }
+            },
+            required: ["query"]
+          }
+        }
       }
     ];
 
@@ -438,6 +459,39 @@ You MUST respond in the user's selected language at all times.
               case 'navigate_to': {
                 navigationAction = functionArgs.route;
                 toolResult = { success: true, route: functionArgs.route };
+                break;
+              }
+
+              case 'youtube_search': {
+                const ytQuery = functionArgs.query;
+                const ytLang = functionArgs.language || '';
+                const YOUTUBE_API_KEY = Deno.env.get('YOUTUBE_API_KEY');
+                if (!YOUTUBE_API_KEY) {
+                  toolResult = { error: 'YouTube API not configured' };
+                  break;
+                }
+                const langCodes: Record<string, string> = {
+                  'English': 'en', 'Hindi': 'hi', 'Telugu': 'te', 'Tamil': 'ta',
+                  'Marathi': 'mr', 'Kannada': 'kn', 'Bengali': 'bn', 'Punjabi': 'pa',
+                };
+                const ytParams = new URLSearchParams({
+                  part: 'snippet', q: ytQuery + ' farming', type: 'video',
+                  maxResults: '5', key: YOUTUBE_API_KEY, videoEmbeddable: 'true',
+                });
+                if (ytLang && langCodes[ytLang]) ytParams.set('relevanceLanguage', langCodes[ytLang]);
+                try {
+                  const ytResp = await fetch(`https://www.googleapis.com/youtube/v3/search?${ytParams}`);
+                  const ytData = await ytResp.json();
+                  const ytVideos = (ytData.items || []).map((item: any) => ({
+                    title: item.snippet.title,
+                    videoId: item.id.videoId,
+                    channel: item.snippet.channelTitle,
+                    url: `https://www.youtube.com/watch?v=${item.id.videoId}`,
+                  }));
+                  toolResult = { videos: ytVideos, query: ytQuery };
+                } catch (e) {
+                  toolResult = { error: 'Failed to search YouTube' };
+                }
                 break;
               }
 
