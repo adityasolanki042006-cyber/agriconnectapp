@@ -455,7 +455,7 @@ const FertilizerFriend = () => {
             </div>
 
             {/* Hindi Tutorials */}
-            <div>
+            <div className="mb-10">
               <div className="flex items-center gap-3 mb-5">
                 <Badge className="bg-orange-100 text-orange-800 text-sm px-4 py-1">🇮🇳 हिंदी ट्यूटोरियल</Badge>
               </div>
@@ -470,15 +470,151 @@ const FertilizerFriend = () => {
                 ].map((video) => (
                   <Card key={video.id} className="overflow-hidden hover:shadow-xl transition-all duration-300">
                     <div className="aspect-video">
-                      <iframe
-                        width="100%"
-                        height="100%"
-                        src={`https://www.youtube.com/embed/${video.id}`}
-                        title={video.title}
-                        frameBorder="0"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                        allowFullScreen
-                      />
+                      <iframe width="100%" height="100%" src={`https://www.youtube.com/embed/${video.id}`} title={video.title} frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen />
+                    </div>
+                    <div className="p-4">
+                      <h4 className="font-bold text-gray-900 mb-1">{video.title}</h4>
+                      <p className="text-sm text-gray-600">{video.desc}</p>
+                    </div>
+                  </Card>
+                ))}
+              </div>
+            </div>
+
+            {/* Telugu Tutorials */}
+            <div className="mb-10">
+              <div className="flex items-center gap-3 mb-5">
+                <Badge className="bg-yellow-100 text-yellow-800 text-sm px-4 py-1">🇮🇳 తెలుగు ట్యుటోరియల్స్</Badge>
+              </div>
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {[
+                  { id: 'OdRwhrJYSog', title: 'జీవన ఎరువుల తయారీ', desc: 'బయో ఫెర్టిలైజర్ తయారీ మరియు వాడకం గురించి తెలుసుకోండి' },
+                  { id: 'Jug96Lt7z4k', title: 'గ్రోమోర్ NPK ఎరువుల వాడకం', desc: '10:26:26 మరియు 14:35:14 ఎరువుల మధ్య తేడా మరియు ఉపయోగాలు' },
+                  { id: 'iJKRoFncylo', title: 'వరిలో కలుపు నివారణ', desc: 'వరి పంటలో కలుపు మందులు మరియు ఎరువుల వాడకం' },
+                ].map((video) => (
+                  <Card key={video.id} className="overflow-hidden hover:shadow-xl transition-all duration-300">
+                    <div className="aspect-video">
+                      <iframe width="100%" height="100%" src={`https://www.youtube.com/embed/${video.id}`} title={video.title} frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen />
+                    </div>
+                    <div className="p-4">
+                      <h4 className="font-bold text-gray-900 mb-1">{video.title}</h4>
+                      <p className="text-sm text-gray-600">{video.desc}</p>
+                    </div>
+                  </Card>
+                ))}
+              </div>
+            </div>
+
+            {/* Tamil Tutorials */}
+            <div className="mb-10">
+              <div className="flex items-center gap-3 mb-5">
+                <Badge className="bg-red-100 text-red-800 text-sm px-4 py-1">🇮🇳 தமிழ் பயிற்சிகள்</Badge>
+              </div>
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {[
+                  { id: 'eWdvDRREnFs', title: 'மண்புழு உரம் செய்வது எப்படி', desc: 'வீட்டிலேயே மண்புழு உரம் தயாரிக்கும் முறை' },
+                  { id: '0ByAGJax5-c', title: 'காய்கறிகளுக்கு சிறந்த திரவ உரம்', desc: 'தக்காளி, மிளகாய், கத்திரிக்காய்க்கு சிறந்த உரங்கள்' },
+                  { id: 'z1Q11hVJyx0', title: 'பழமரங்களுக்கு இயற்கை உரம்', desc: 'கொய்யா மற்றும் பழமரங்களுக்கு இயற்கை உர பயன்பாடு' },
+                ].map((video) => (
+                  <Card key={video.id} className="overflow-hidden hover:shadow-xl transition-all duration-300">
+                    <div className="aspect-video">
+                      <iframe width="100%" height="100%" src={`https://www.youtube.com/embed/${video.id}`} title={video.title} frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen />
+                    </div>
+                    <div className="p-4">
+                      <h4 className="font-bold text-gray-900 mb-1">{video.title}</h4>
+                      <p className="text-sm text-gray-600">{video.desc}</p>
+                    </div>
+                  </Card>
+                ))}
+              </div>
+            </div>
+
+            {/* Marathi Tutorials */}
+            <div className="mb-10">
+              <div className="flex items-center gap-3 mb-5">
+                <Badge className="bg-emerald-100 text-emerald-800 text-sm px-4 py-1">🇮🇳 मराठी ट्यूटोरियल</Badge>
+              </div>
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {[
+                  { id: 'mIAJpIvJc0M', title: 'खताचा योग्य वापर', desc: 'शेतात खतांचा योग्य वापर कसा करावा ते शिका' },
+                  { id: '3dWUmVg_Pdw', title: 'सल्फर / गंधक टाकण्याचे फायदे', desc: 'शेतात गंधकाचे महत्त्व आणि महागडी खते वाचवा' },
+                  { id: 'eWrvCus70xQ', title: 'ट्रायकोडर्मा जैविक बुरशीनाशक', desc: 'बुरशीजन्य रोग नियंत्रणासाठी ट्रायकोडर्माचा वापर' },
+                ].map((video) => (
+                  <Card key={video.id} className="overflow-hidden hover:shadow-xl transition-all duration-300">
+                    <div className="aspect-video">
+                      <iframe width="100%" height="100%" src={`https://www.youtube.com/embed/${video.id}`} title={video.title} frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen />
+                    </div>
+                    <div className="p-4">
+                      <h4 className="font-bold text-gray-900 mb-1">{video.title}</h4>
+                      <p className="text-sm text-gray-600">{video.desc}</p>
+                    </div>
+                  </Card>
+                ))}
+              </div>
+            </div>
+
+            {/* Kannada Tutorials */}
+            <div className="mb-10">
+              <div className="flex items-center gap-3 mb-5">
+                <Badge className="bg-violet-100 text-violet-800 text-sm px-4 py-1">🇮🇳 ಕನ್ನಡ ಟ್ಯುಟೋರಿಯಲ್ಸ್</Badge>
+              </div>
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {[
+                  { id: 'eKpbLFwLVoI', title: 'ರಸಗೊಬ್ಬರ ಬಳಕೆ ವಿಧಾನ', desc: 'ಬೆಳೆಗಳಿಗೆ ಸರಿಯಾದ ರಸಗೊಬ್ಬರ ಹಾಕುವ ವಿಧಾನ ತಿಳಿಯಿರಿ' },
+                  { id: 'HDHYClpIKK8', title: 'ಸಮಗ್ರ ಪೋಷಕಾಂಶ ನಿರ್ವಹಣೆ', desc: 'ಬೆಳೆಗಳಿಗೆ ಸಮಗ್ರ ಪೋಷಕಾಂಶ ನಿರ್ವಹಣೆ ಕುರಿತು ಮಾಹಿತಿ' },
+                  { id: '8EAsTWQuD00', title: 'ಸಾವಯವ ಗೊಬ್ಬರ ತಯಾರಿಕೆ', desc: 'ಸಾವಯವ ಗೊಬ್ಬರ ಮತ್ತು ಮಣ್ಣಿನ ಆರೋಗ್ಯ ಕಾರ್ಡ್ ಬಗ್ಗೆ ತಿಳಿಯಿರಿ' },
+                ].map((video) => (
+                  <Card key={video.id} className="overflow-hidden hover:shadow-xl transition-all duration-300">
+                    <div className="aspect-video">
+                      <iframe width="100%" height="100%" src={`https://www.youtube.com/embed/${video.id}`} title={video.title} frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen />
+                    </div>
+                    <div className="p-4">
+                      <h4 className="font-bold text-gray-900 mb-1">{video.title}</h4>
+                      <p className="text-sm text-gray-600">{video.desc}</p>
+                    </div>
+                  </Card>
+                ))}
+              </div>
+            </div>
+
+            {/* Bengali Tutorials */}
+            <div className="mb-10">
+              <div className="flex items-center gap-3 mb-5">
+                <Badge className="bg-teal-100 text-teal-800 text-sm px-4 py-1">🇮🇳 বাংলা টিউটোরিয়াল</Badge>
+              </div>
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {[
+                  { id: 'rF3TsZyEIUI', title: 'কোন সারের কি কাজ', desc: 'কোন সার কখন প্রয়োগ করবেন তা বিস্তারিত জানুন' },
+                  { id: 'eOcV-ThT5YA', title: 'গাছে সার প্রয়োগ পদ্ধতি', desc: 'গাছে কোন সারের কি কাজ এবং কতটুকু প্রয়োগ করবেন' },
+                  { id: 'cahe7u5Z__E', title: 'বেলি ফুলের জন্য তরল সার', desc: 'মিশ্র তরল সার দিয়ে প্রচুর ফুল ফোটানোর পদ্ধতি' },
+                ].map((video) => (
+                  <Card key={video.id} className="overflow-hidden hover:shadow-xl transition-all duration-300">
+                    <div className="aspect-video">
+                      <iframe width="100%" height="100%" src={`https://www.youtube.com/embed/${video.id}`} title={video.title} frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen />
+                    </div>
+                    <div className="p-4">
+                      <h4 className="font-bold text-gray-900 mb-1">{video.title}</h4>
+                      <p className="text-sm text-gray-600">{video.desc}</p>
+                    </div>
+                  </Card>
+                ))}
+              </div>
+            </div>
+
+            {/* Punjabi Tutorials */}
+            <div>
+              <div className="flex items-center gap-3 mb-5">
+                <Badge className="bg-amber-100 text-amber-800 text-sm px-4 py-1">🇮🇳 ਪੰਜਾਬੀ ਟਿਊਟੋਰੀਅਲ</Badge>
+              </div>
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {[
+                  { id: 'S5eaMZGE3YU', title: 'ਕਣਕ ਵਿੱਚ ਖਾਦ ਦੀ ਵਰਤੋਂ', desc: 'ਕਣਕ ਦੀ ਫਸਲ ਵਿੱਚ ਪਹਿਲੀ ਸਿੰਚਾਈ ਤੇ ਕਿਹੜੀ ਖਾਦ ਪਾਉਣੀ ਚਾਹੀਦੀ ਹੈ' },
+                  { id: '8cgLpLLa8lg', title: 'ਫੁੱਲਾਂ ਦੀ ਖੇਤੀ', desc: 'ਪੰਜਾਬ ਵਿੱਚ ਫੁੱਲਾਂ ਦੀ ਖੇਤੀ ਅਤੇ ਖਾਦ ਪ੍ਰਬੰਧਨ ਬਾਰੇ ਜਾਣਕਾਰੀ' },
+                  { id: 'x8FGLdBuTqA', title: 'ਕਣਕ ਦੀ ਵੱਧ ਪੈਦਾਵਾਰ ਲਈ ਖਾਦ', desc: 'ਕਣਕ ਦੀ ਫਸਲ ਤੋਂ ਵੱਧ ਤੋਂ ਵੱਧ ਝਾੜ ਲੈਣ ਲਈ ਖਾਦ ਯੋਜਨਾ' },
+                ].map((video) => (
+                  <Card key={video.id} className="overflow-hidden hover:shadow-xl transition-all duration-300">
+                    <div className="aspect-video">
+                      <iframe width="100%" height="100%" src={`https://www.youtube.com/embed/${video.id}`} title={video.title} frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen />
                     </div>
                     <div className="p-4">
                       <h4 className="font-bold text-gray-900 mb-1">{video.title}</h4>
