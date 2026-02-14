@@ -21,24 +21,13 @@ serve(async (req) => {
       );
     }
 
-    const OPENAI_API_KEY = Deno.env.get('OPENAI_API_KEY');
     const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
-    
-    const useOpenAI = !!OPENAI_API_KEY;
-    const apiKey = OPENAI_API_KEY || LOVABLE_API_KEY;
-    const apiUrl = useOpenAI 
-      ? 'https://api.openai.com/v1/chat/completions'
-      : 'https://ai.gateway.lovable.dev/v1/chat/completions';
-    const modelName = useOpenAI ? 'gpt-4o' : 'google/gemini-2.5-flash';
-    
-    if (!apiKey) {
+    if (!LOVABLE_API_KEY) {
       return new Response(
         JSON.stringify({ error: 'AI service not configured' }), 
         { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
-    
-    console.log('Using AI provider:', useOpenAI ? 'OpenAI' : 'Lovable AI');
 
     // Initialize Supabase
     const authHeader = req.headers.get('authorization');
@@ -243,7 +232,7 @@ You MUST respond in the user's selected language at all times.
       console.log(`Iteration ${iterations}`);
 
       const requestBody = {
-        model: modelName,
+        model: 'google/gemini-2.5-flash',
         messages: openaiMessages,
         tools: tools,
         temperature: 0.7,
@@ -251,11 +240,11 @@ You MUST respond in the user's selected language at all times.
       };
 
       const response = await fetch(
-        apiUrl,
+        'https://ai.gateway.lovable.dev/v1/chat/completions',
         {
           method: 'POST',
           headers: {
-            'Authorization': `Bearer ${apiKey}`,
+            'Authorization': `Bearer ${LOVABLE_API_KEY}`,
             'Content-Type': 'application/json',
           },
           body: JSON.stringify(requestBody),
