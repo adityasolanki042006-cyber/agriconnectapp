@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import ReactMarkdown from 'react-markdown';
 import { Search as SearchIcon, Filter, Mic, X, Clock, TrendingUp, Image as ImageIcon, Sparkles, Loader2 } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -425,8 +426,8 @@ const Search = () => {
                       <Badge variant="secondary" className="text-xs">Real-time data enabled</Badge>
                     </div>
                   </div>
-                  <div className="prose prose-sm max-w-none text-gray-700 whitespace-pre-wrap pl-13">
-                    {aiResponse}
+                  <div className="prose prose-sm max-w-none text-gray-700 pl-13 dark:prose-invert">
+                    <ReactMarkdown>{aiResponse}</ReactMarkdown>
                   </div>
                 </div>
               </Card>
