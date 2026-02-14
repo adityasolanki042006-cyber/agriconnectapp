@@ -21,15 +21,15 @@ serve(async (req) => {
       );
     }
 
-    const OPENAI_API_KEY = Deno.env.get('OPENAI_API_KEY');
+    const GOOGLE_GEMINI_API_KEY = Deno.env.get('GOOGLE_GEMINI_API_KEY');
     const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
     
-    const useOpenAI = !!OPENAI_API_KEY;
-    const apiKey = useOpenAI ? OPENAI_API_KEY : LOVABLE_API_KEY;
-    const apiUrl = useOpenAI 
-      ? 'https://api.openai.com/v1/chat/completions'
+    const useGemini = !!GOOGLE_GEMINI_API_KEY;
+    const apiKey = useGemini ? GOOGLE_GEMINI_API_KEY : LOVABLE_API_KEY;
+    const apiUrl = useGemini 
+      ? 'https://generativelanguage.googleapis.com/v1beta/openai/chat/completions'
       : 'https://ai.gateway.lovable.dev/v1/chat/completions';
-    const modelName = useOpenAI ? 'gpt-4o' : 'google/gemini-2.5-flash';
+    const modelName = useGemini ? 'gemini-2.5-flash' : 'google/gemini-2.5-flash';
     
     if (!apiKey) {
       return new Response(
@@ -38,7 +38,7 @@ serve(async (req) => {
       );
     }
     
-    console.log('Using AI provider:', useOpenAI ? 'OpenAI' : 'Lovable AI');
+    console.log('Using AI provider:', useGemini ? 'Google Gemini (direct)' : 'Lovable AI');
 
     // Initialize Supabase
     const authHeader = req.headers.get('authorization');
