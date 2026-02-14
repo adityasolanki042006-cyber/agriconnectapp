@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import ReactMarkdown from 'react-markdown';
 import { MessageCircle, X, Send, Mic, Bot, User, Image as ImageIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -421,7 +422,9 @@ const FloatingAIChat = ({ isOpen: externalIsOpen, onOpenChange }: FloatingAIChat
                       className="rounded-lg mb-2 max-w-full h-auto"
                     />
                   )}
-                  <p className="text-sm leading-relaxed whitespace-pre-line">{message.message}</p>
+                  <div className="text-sm leading-relaxed prose prose-sm max-w-none dark:prose-invert">
+                    <ReactMarkdown>{message.message}</ReactMarkdown>
+                  </div>
                   <p className={`text-xs mt-1 ${
                     message.type === 'user' ? 'text-blue-100' : 'text-gray-500'
                   }`}>
