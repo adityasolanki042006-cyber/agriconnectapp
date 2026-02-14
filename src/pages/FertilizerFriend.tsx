@@ -46,7 +46,7 @@ const FertilizerFriend = () => {
       brand: 'FertiFarm',
       description: 'High-grade NPK fertilizer for cereal crops',
       image: '🧪',
-      videoId: 'QLzo4rPyBgg'
+      videoId: 'Y654mtxQKmY'
     },
     {
       id: 102,
@@ -61,7 +61,7 @@ const FertilizerFriend = () => {
       brand: 'GreenGrow',
       description: 'Natural organic compost enriched with micronutrients',
       image: '🌱',
-      videoId: 'eSfqxlGGSFE'
+      videoId: 'IWl5L9N_s2o'
     },
     {
       id: 103,
@@ -76,7 +76,7 @@ const FertilizerFriend = () => {
       brand: 'VeggiMax',
       description: 'Specially formulated for nightshade vegetables',
       image: '🍅',
-      videoId: 'bGCqIB_pDdY'
+      videoId: '6fDptIII1Yo'
     },
     {
       id: 104,
@@ -91,7 +91,7 @@ const FertilizerFriend = () => {
       brand: 'BioPulse',
       description: 'Organic phosphate booster for pulse crops',
       image: '🫘',
-      videoId: 'S7HdFsAjKBk'
+      videoId: 'FjDxSAKfMrw'
     },
     {
       id: 105,
@@ -106,7 +106,7 @@ const FertilizerFriend = () => {
       brand: 'RiceMax Pro',
       description: 'Nitrogen-rich formula for paddy fields',
       image: '🌾',
-      videoId: '2b2tW0JDwKo'
+      videoId: 'Za-vOzHC_9c'
     },
     {
       id: 106,
@@ -121,7 +121,7 @@ const FertilizerFriend = () => {
       brand: 'MicroBoost',
       description: 'Essential micronutrients for all crop types',
       image: '⚗️',
-      videoId: 'FnDCRPQmfRg'
+      videoId: 'EMBXI5MSE2c'
     }
   ];
 
