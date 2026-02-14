@@ -416,36 +416,77 @@ const FertilizerFriend = () => {
               <p className="text-gray-600 max-w-2xl mx-auto">Watch expert tutorials on soil testing, composting, fertilizer methods, and more</p>
             </div>
 
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {[
-                { id: '6xwK0uLbn4U', title: 'Fertilizer Application Methods', desc: 'Learn different techniques for applying fertilizers effectively on your farm' },
-                { id: 'np9RbtHX6mA', title: 'Soil Testing Made Easy', desc: 'Understand soil test reports and how to amend soil for better crop nutrition' },
-                { id: 'HYrkcfE62Pg', title: 'Interpret Soil Test Results', desc: 'Learn to read your soil lab results and buy the right fertilizer' },
-                { id: 'GP7bliTR1HI', title: 'Balanced NPK 20-20-20 Application', desc: 'See the effects of balanced NPK fertilizer on vegetable crops' },
-                { id: 'k13UimwG2LQ', title: '4 Easy Composting Methods', desc: 'Transform waste into rich mulch and potting mix with no-dig techniques' },
-                { id: 'fFIXcszNJSY', title: 'Organic Compost Making', desc: 'Dr. Elaine Ingham shows easy science of creating clean organic compost' },
-                { id: 'S8M_6oU4C28', title: 'How to Collect Soil Samples', desc: 'Step-by-step guide to collecting representative soil samples at home' },
-                { id: 'aC1B2ePY3Ag', title: 'Easy Guide to Fertilizing Tomatoes', desc: 'How often to feed tomato plants and what to use for best results' },
-                { id: 'JG_TbQKhFBE', title: 'Accurate Dry Fertilizer Application', desc: 'Tips to minimize yield loss with proper dry fertilizer placement' },
-              ].map((video) => (
-                <Card key={video.id} className="overflow-hidden hover:shadow-xl transition-all duration-300">
-                  <div className="aspect-video">
-                    <iframe
-                      width="100%"
-                      height="100%"
-                      src={`https://www.youtube.com/embed/${video.id}`}
-                      title={video.title}
-                      frameBorder="0"
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                      allowFullScreen
-                    />
-                  </div>
-                  <div className="p-4">
-                    <h4 className="font-bold text-gray-900 mb-1">{video.title}</h4>
-                    <p className="text-sm text-gray-600">{video.desc}</p>
-                  </div>
-                </Card>
-              ))}
+            {/* English Tutorials */}
+            <div className="mb-10">
+              <div className="flex items-center gap-3 mb-5">
+                <Badge className="bg-blue-100 text-blue-800 text-sm px-4 py-1">🇬🇧 English Tutorials</Badge>
+              </div>
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {[
+                  { id: '6xwK0uLbn4U', title: 'Fertilizer Application Methods', desc: 'Learn different techniques for applying fertilizers effectively on your farm' },
+                  { id: 'np9RbtHX6mA', title: 'Soil Testing Made Easy', desc: 'Understand soil test reports and how to amend soil for better crop nutrition' },
+                  { id: 'HYrkcfE62Pg', title: 'Interpret Soil Test Results', desc: 'Learn to read your soil lab results and buy the right fertilizer' },
+                  { id: 'GP7bliTR1HI', title: 'Balanced NPK 20-20-20 Application', desc: 'See the effects of balanced NPK fertilizer on vegetable crops' },
+                  { id: 'k13UimwG2LQ', title: '4 Easy Composting Methods', desc: 'Transform waste into rich mulch and potting mix with no-dig techniques' },
+                  { id: 'fFIXcszNJSY', title: 'Organic Compost Making', desc: 'Dr. Elaine Ingham shows easy science of creating clean organic compost' },
+                  { id: 'S8M_6oU4C28', title: 'How to Collect Soil Samples', desc: 'Step-by-step guide to collecting representative soil samples at home' },
+                  { id: 'aC1B2ePY3Ag', title: 'Easy Guide to Fertilizing Tomatoes', desc: 'How often to feed tomato plants and what to use for best results' },
+                  { id: 'JG_TbQKhFBE', title: 'Accurate Dry Fertilizer Application', desc: 'Tips to minimize yield loss with proper dry fertilizer placement' },
+                ].map((video) => (
+                  <Card key={video.id} className="overflow-hidden hover:shadow-xl transition-all duration-300">
+                    <div className="aspect-video">
+                      <iframe
+                        width="100%"
+                        height="100%"
+                        src={`https://www.youtube.com/embed/${video.id}`}
+                        title={video.title}
+                        frameBorder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowFullScreen
+                      />
+                    </div>
+                    <div className="p-4">
+                      <h4 className="font-bold text-gray-900 mb-1">{video.title}</h4>
+                      <p className="text-sm text-gray-600">{video.desc}</p>
+                    </div>
+                  </Card>
+                ))}
+              </div>
+            </div>
+
+            {/* Hindi Tutorials */}
+            <div>
+              <div className="flex items-center gap-3 mb-5">
+                <Badge className="bg-orange-100 text-orange-800 text-sm px-4 py-1">🇮🇳 हिंदी ट्यूटोरियल</Badge>
+              </div>
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {[
+                  { id: 'g-_Ck8LrUSY', title: 'पौधों में कब और कौन सी खाद डालें', desc: 'फूलों के पौधों में सही समय पर सही खाद डालने का तरीका जानें' },
+                  { id: 'NlUnV_dESVQ', title: '2 सस्ती खाद से पौधे हरे-भरे', desc: 'सभी पौधों में ऑर्गेनिक और NPK खाद डालकर लगातार फूल खिलाएं' },
+                  { id: 'NI-Xq1Lr4Sk', title: 'NPK खाद घर पर कैसे बनाएं', desc: 'यूरिया, DAP और MOP से घर पर NPK 19-19-19 और अन्य खाद बनाएं' },
+                  { id: 'xlp-FcdzKKo', title: 'DAP और NPK से पावरफुल खाद', desc: 'Ammonium Phosphate Sulphate fertilizer का सही उपयोग सीखें' },
+                  { id: 'izJi49ee_IQ', title: 'घर पर खाद और कीटनाशक बनाएं', desc: 'ऑर्गेनिक फार्मिंग के लिए घर पर ही खाद और कीटनाशक तैयार करें' },
+                  { id: '3tuGPD3FfUE', title: 'गन्ने के साथ आलू और टमाटर उगाएं', desc: 'ऑर्गेनिक फार्मिंग से गन्ने के साथ सब्जियां उगाकर लाखों कमाएं' },
+                ].map((video) => (
+                  <Card key={video.id} className="overflow-hidden hover:shadow-xl transition-all duration-300">
+                    <div className="aspect-video">
+                      <iframe
+                        width="100%"
+                        height="100%"
+                        src={`https://www.youtube.com/embed/${video.id}`}
+                        title={video.title}
+                        frameBorder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowFullScreen
+                      />
+                    </div>
+                    <div className="p-4">
+                      <h4 className="font-bold text-gray-900 mb-1">{video.title}</h4>
+                      <p className="text-sm text-gray-600">{video.desc}</p>
+                    </div>
+                  </Card>
+                ))}
+              </div>
             </div>
           </div>
 
