@@ -12,6 +12,7 @@ import Orders from "./pages/Orders";
 import Farmers from "./pages/Farmers";
 import Vendors from "./pages/Vendors";
 import BusinessTips from "./pages/BusinessTips";
+import FertilizerFriend from "./pages/FertilizerFriend";
 import About from "./pages/About";
 import Search from "./pages/Search";
 import Checkout from "./pages/Checkout";
@@ -45,6 +46,7 @@ const App = () => (
             <Route path="/farmers" element={<Farmers />} />
             <Route path="/vendors" element={<Vendors />} />
             <Route path="/business-tips" element={<BusinessTips />} />
+            <Route path="/fertilizer-friend" element={<FertilizerFriend />} />
             <Route path="/about" element={<About />} />
             <Route path="/contact-support" element={<ContactSupport />} />
             <Route path="/search" element={<Search />} />

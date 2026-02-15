@@ -52,6 +52,7 @@ const Navigation = () => {
         baseNavItems[2], // orders
         baseNavItems[3], // order-history
         { name: t('vendors.title'), href: '/vendors' },
+        { name: 'Fertilizer Friend', href: '/fertilizer-friend' },
         baseNavItems[5], // search
         baseNavItems[6], // about
         baseNavItems[7], // contact-support
