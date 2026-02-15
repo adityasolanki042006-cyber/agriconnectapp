@@ -24,6 +24,15 @@ const Register = () => {
     phone: '',
     password: '',
     confirmPassword: '',
+    // Farmer-specific
+    farmName: '',
+    farmSize: '',
+    mainCrops: '',
+    // Business-specific
+    businessName: '',
+    registrationNumber: '',
+    businessAddress: '',
+    contactPerson: '',
   });
 
   useEffect(() => {
@@ -73,6 +82,25 @@ const Register = () => {
       newErrors.confirmPassword = 'Passwords do not match';
     }
 
+    // Additional validation based on user type
+    if (userType === 'businessman') {
+      if (!formData.businessName.trim()) {
+        newErrors.businessName = 'Business name is required for business accounts';
+      }
+      if (!formData.registrationNumber.trim()) {
+        newErrors.registrationNumber = 'Registration number is required';
+      }
+      if (!formData.businessAddress.trim()) {
+        newErrors.businessAddress = 'Business address is required';
+      }
+    }
+
+    if (userType === 'farmer') {
+      if (!formData.farmName.trim()) {
+        newErrors.farmName = 'Farm name is required for farmers';
+      }
+    }
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -96,6 +124,21 @@ const Register = () => {
     setLoading(true);
 
     try {
+      // Persist extra registration data for profile completion step
+      const extra = {} as Record<string, string>;
+      if (userType === 'businessman') {
+        extra.businessName = formData.businessName;
+        extra.registrationNumber = formData.registrationNumber;
+        extra.businessAddress = formData.businessAddress;
+        extra.contactPerson = formData.contactPerson;
+      }
+      if (userType === 'farmer') {
+        extra.farmName = formData.farmName;
+        extra.farmSize = formData.farmSize;
+        extra.mainCrops = formData.mainCrops;
+      }
+      sessionStorage.setItem('registrationExtra', JSON.stringify(extra));
+
       const { error } = await signUp(
         formData.email,
         formData.password,
@@ -263,6 +306,127 @@ const Register = () => {
               <p className="text-sm text-destructive">{errors.confirmPassword}</p>
             )}
           </div>
+
+          {/* Extra fields for Business */}
+          {userType === 'businessman' && (
+            <div className="space-y-4">
+              <h3 className="text-lg font-medium">Business Details</h3>
+
+              <div className="space-y-2">
+                <Label htmlFor="businessName">Business Name</Label>
+                <Input
+                  id="businessName"
+                  name="businessName"
+                  type="text"
+                  placeholder="Acme Farming Ltd."
+                  value={formData.businessName}
+                  onChange={handleChange}
+                  disabled={loading}
+                  className={errors.businessName ? 'border-destructive' : ''}
+                />
+                {errors.businessName && (
+                  <p className="text-sm text-destructive">{errors.businessName}</p>
+                )}
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="registrationNumber">Registration Number</Label>
+                <Input
+                  id="registrationNumber"
+                  name="registrationNumber"
+                  type="text"
+                  placeholder="BRN-123456"
+                  value={formData.registrationNumber}
+                  onChange={handleChange}
+                  disabled={loading}
+                  className={errors.registrationNumber ? 'border-destructive' : ''}
+                />
+                {errors.registrationNumber && (
+                  <p className="text-sm text-destructive">{errors.registrationNumber}</p>
+                )}
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="businessAddress">Business Address</Label>
+                <Input
+                  id="businessAddress"
+                  name="businessAddress"
+                  type="text"
+                  placeholder="123 Market Street"
+                  value={formData.businessAddress}
+                  onChange={handleChange}
+                  disabled={loading}
+                  className={errors.businessAddress ? 'border-destructive' : ''}
+                />
+                {errors.businessAddress && (
+                  <p className="text-sm text-destructive">{errors.businessAddress}</p>
+                )}
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="contactPerson">Contact Person</Label>
+                <Input
+                  id="contactPerson"
+                  name="contactPerson"
+                  type="text"
+                  placeholder="Jane Doe"
+                  value={formData.contactPerson}
+                  onChange={handleChange}
+                  disabled={loading}
+                />
+              </div>
+            </div>
+          )}
+
+          {/* Extra fields for Farmer */}
+          {userType === 'farmer' && (
+            <div className="space-y-4">
+              <h3 className="text-lg font-medium">Farm Details</h3>
+
+              <div className="space-y-2">
+                <Label htmlFor="farmName">Farm Name</Label>
+                <Input
+                  id="farmName"
+                  name="farmName"
+                  type="text"
+                  placeholder="Green Acres Farm"
+                  value={formData.farmName}
+                  onChange={handleChange}
+                  disabled={loading}
+                  className={errors.farmName ? 'border-destructive' : ''}
+                />
+                {errors.farmName && (
+                  <p className="text-sm text-destructive">{errors.farmName}</p>
+                )}
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="farmSize">Farm Size (acres)</Label>
+                <Input
+                  id="farmSize"
+                  name="farmSize"
+                  type="text"
+                  placeholder="e.g., 50"
+                  value={formData.farmSize}
+                  onChange={handleChange}
+                  disabled={loading}
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="mainCrops">Main Crops / Livestock</Label>
+                <Input
+                  id="mainCrops"
+                  name="mainCrops"
+                  type="text"
+                  placeholder="Maize, Beans"
+                  value={formData.mainCrops}
+                  onChange={handleChange}
+                  disabled={loading}
+                />
+              </div>
+            </div>
+          )}
 
           <Button
             type="submit"

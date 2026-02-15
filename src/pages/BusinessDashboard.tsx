@@ -433,12 +433,12 @@ const BusinessDashboard = () => {
                     Order History
                   </Button>
                   <Button
-                    onClick={() => navigate('/vendors')}
+                    onClick={() => navigate('/farmers')}
                     className="w-full justify-start"
                     variant="outline"
                   >
                     <Users className="w-4 h-4 mr-2" />
-                    View Vendors
+                    View Farmers
                   </Button>
                   <Button
                     onClick={() => navigate('/search')}

@@ -5,7 +5,6 @@ import ProblemSection from '@/components/ProblemSection';
 import SolutionSection from '@/components/SolutionSection';
 import FeaturesSection from '@/components/FeaturesSection';
 import MarketplaceSection from '@/components/MarketplaceSection';
-import FertilizerSection from '@/components/FertilizerSection';
 import AIChatbotSection from '@/components/AIChatbotSection';
 import PricingSection from '@/components/PricingSection';
 import Footer from '@/components/Footer';
@@ -32,9 +31,6 @@ const Index = () => {
       </div>
       <div id="marketplace">
         <MarketplaceSection />
-      </div>
-      <div id="fertilizer">
-        <FertilizerSection />
       </div>
       <div id="pricing">
         <PricingSection />
