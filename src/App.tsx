@@ -9,9 +9,8 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import Index from "./pages/Index";
 import Marketplace from "./pages/Marketplace";
 import Orders from "./pages/Orders";
-import Farmers from "./pages/Farmers";
+import Vendors from "./pages/Vendors";
 import BusinessTips from "./pages/BusinessTips";
-// Vendors page removed; use Farmers page instead
 import About from "./pages/About";
 import Search from "./pages/Search";
 import Checkout from "./pages/Checkout";
@@ -42,7 +41,7 @@ const App = () => (
             <Route path="/marketplace" element={<Marketplace />} />
             <Route path="/orders" element={<ProtectedRoute><Orders /></ProtectedRoute>} />
             <Route path="/order-history" element={<ProtectedRoute><OrderHistory /></ProtectedRoute>} />
-            <Route path="/farmers" element={<Farmers />} />
+            <Route path="/vendors" element={<Vendors />} />
             <Route path="/business-tips" element={<BusinessTips />} />
             <Route path="/about" element={<About />} />
             <Route path="/contact-support" element={<ContactSupport />} />

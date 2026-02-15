@@ -36,7 +36,7 @@ const Navigation = () => {
     { name: t('nav.marketplace'), href: '/marketplace' },
     { name: t('nav.orders'), href: '/orders' },
     { name: t('nav.orderHistory'), href: '/order-history' },
-    { name: t('hero.farmers'), href: '/farmers' },
+    { name: t('vendors.title'), href: '/vendors' },
     { name: 'Business Tips', href: '/business-tips' },
     { name: t('nav.search'), href: '/search' },
     { name: t('nav.aboutUs'), href: '/about' },

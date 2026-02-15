@@ -433,12 +433,12 @@ const BusinessDashboard = () => {
                     Order History
                   </Button>
                   <Button
-                    onClick={() => navigate('/farmers')}
+                    onClick={() => navigate('/vendors')}
                     className="w-full justify-start"
                     variant="outline"
                   >
                     <Users className="w-4 h-4 mr-2" />
-                    View Farmers
+                    View Vendors
                   </Button>
                   <Button
                     onClick={() => navigate('/search')}
@@ -475,7 +475,7 @@ const BusinessDashboard = () => {
                 <ul className="text-sm text-muted-foreground space-y-2">
                   <li className="flex items-start gap-2">
                     <CheckCircle2 className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
-                    Connect directly with farmers for fresh produce
+                    Connect directly with vendors for fresh produce
                   </li>
                   <li className="flex items-start gap-2">
                     <CheckCircle2 className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
