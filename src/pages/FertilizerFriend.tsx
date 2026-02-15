@@ -34,6 +34,7 @@ const FertilizerFriend = () => {
   const [tutorialLoading, setTutorialLoading] = useState(false);
   const [selectedVideoId, setSelectedVideoId] = useState<string | null>(null);
   const [isTutorialOpen, setIsTutorialOpen] = useState(false);
+  const [tutorialMap, setTutorialMap] = useState<Record<number, string>>({});
 
   // YouTube API key provided by user
   const YT_API_KEY = 'AIzaSyCmxmuSS1T2BIbFYxjtu0ZnP7a-OqY-huQ';
@@ -157,6 +158,30 @@ const FertilizerFriend = () => {
     
     return matchesType && matchesCrop && matchesSearch;
   });
+
+  // Prefetch top tutorial video IDs for each fertilizer (best-effort)
+  useEffect(() => {
+    let mounted = true;
+    const fetchAll = async () => {
+      for (const f of fertilizers) {
+        try {
+          const q = `${f.name} fertilizer tutorial`;
+          const resp = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&maxResults=1&q=${encodeURIComponent(q)}&key=${YT_API_KEY}`);
+          const data = await resp.json();
+          const videoId = data?.items?.[0]?.id?.videoId;
+          if (mounted && videoId) {
+            setTutorialMap(prev => ({ ...prev, [f.id]: videoId }));
+          }
+        } catch (err) {
+          // ignore per-fertilizer errors (fallback uses search)
+          console.error('prefetch tutorial error for', f.name, err);
+        }
+      }
+    };
+
+    fetchAll();
+    return () => { mounted = false; };
+  }, []);
 
   const getCartQuantity = (fertilizerId: number) => {
     return cart.find(item => item.id === String(fertilizerId))?.quantity || 0;
@@ -395,6 +420,14 @@ const FertilizerFriend = () => {
                       size="sm"
                       onClick={async () => {
                         const q = `${fertilizer.name} fertilizer tutorial`;
+                        // If we prefetched a video id for this fertilizer, use it
+                        const prefetched = tutorialMap[fertilizer.id];
+                        if (prefetched) {
+                          setSelectedVideoId(prefetched);
+                          setIsTutorialOpen(true);
+                          return;
+                        }
+
                         try {
                           setTutorialLoading(true);
                           const resp = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&maxResults=1&q=${encodeURIComponent(q)}&key=${YT_API_KEY}`);
@@ -403,13 +436,12 @@ const FertilizerFriend = () => {
                           if (videoId) {
                             setSelectedVideoId(videoId);
                             setIsTutorialOpen(true);
+                            setTutorialMap(prev => ({ ...prev, [fertilizer.id]: videoId }));
                           } else {
-                            // fallback: open YouTube search results if API returns no items
                             window.open(`https://www.youtube.com/results?search_query=${encodeURIComponent(q)}`, '_blank');
                           }
                         } catch (err) {
                           console.error('YouTube API fetch error:', err);
-                          // fallback: open YouTube search in new tab when fetch fails
                           window.open(`https://www.youtube.com/results?search_query=${encodeURIComponent(q)}`, '_blank');
                         } finally {
                           setTutorialLoading(false);
