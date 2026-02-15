@@ -29,6 +29,7 @@ const FertilizerFriend = () => {
   const [selectedType, setSelectedType] = useState('All');
   const [selectedCrop, setSelectedCrop] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
+  const [youtubeQuery, setYoutubeQuery] = useState('');
   const [showAIRecommendations, setShowAIRecommendations] = useState(false);
 
   const fertilizers: Fertilizer[] = [
@@ -265,6 +266,27 @@ const FertilizerFriend = () => {
                   ))}
                 </SelectContent>
               </Select>
+            
+              {/* YouTube Search (opens YouTube results in new tab) */}
+              <div className="lg:col-span-4 mt-4">
+                <form
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    const q = youtubeQuery.trim();
+                    if (q) window.open(`https://www.youtube.com/results?search_query=${encodeURIComponent(q)}`, '_blank');
+                  }}
+                  className="flex items-center gap-2"
+                >
+                  <Input
+                    placeholder="Search YouTube tutorials (e.g. 'Super NPK Complex tutorial')"
+                    value={youtubeQuery}
+                    onChange={(e) => setYoutubeQuery(e.target.value)}
+                  />
+                  <Button type="submit" className="btn-hero">
+                    Search YouTube
+                  </Button>
+                </form>
+              </div>
             </div>
           </div>
 
@@ -358,6 +380,18 @@ const FertilizerFriend = () => {
                       </Button>
                     )}
                   </div>
+
+                  {/* Tutorials button - opens YouTube search for the specific fertilizer */}
+                  <div className="mt-3">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => window.open(`https://www.youtube.com/results?search_query=${encodeURIComponent(fertilizer.name + ' fertilizer tutorial')}`, '_blank')}
+                    >
+                      Watch Tutorials
+                    </Button>
+                  </div>
+
                 </div>
               </Card>
             ))}
