@@ -43,8 +43,8 @@ const Navigation = () => {
     { name: t('nav.bio'), href: dashboardHref },
   ];
 
-  // Add Vendors link only for businessmen
-  const navItems = userType === 'businessman' 
+  // Add Vendors link for farmers, Farmers link for businessmen
+  const navItems = userType === 'farmer' 
     ? [
         baseNavItems[0], // home
         baseNavItems[1], // marketplace
@@ -53,7 +53,14 @@ const Navigation = () => {
         { name: t('vendors.title'), href: '/vendors' },
         ...baseNavItems.slice(4) // Business Tips onwards
       ]
-    : baseNavItems;
+    : [
+        baseNavItems[0], // home
+        baseNavItems[1], // marketplace
+        baseNavItems[2], // orders
+        baseNavItems[3], // order-history
+        { name: t('hero.farmers'), href: '/farmers' },
+        ...baseNavItems.slice(4) // Business Tips onwards
+      ];
 
   const handleNavigation = (href: string) => {
     if (href.startsWith('/')) {
