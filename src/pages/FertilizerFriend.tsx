@@ -182,6 +182,7 @@ const FertilizerFriend = () => {
   };
 
   return (
+    <>
     <div className="min-h-screen bg-gradient-to-b from-green-50 to-white">
       <Navigation />
       <FloatingAIChat />
@@ -503,9 +504,10 @@ const FertilizerFriend = () => {
               </div>
             </div>
           )}
-        );
-      };
+        </>
+    );
+  };
 
-      export default FertilizerFriend;
+  export default FertilizerFriend;
 
 // Simple modal renderer for tutorial video (rendered inside this component via state)
