@@ -31,6 +31,12 @@ const FertilizerFriend = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [youtubeQuery, setYoutubeQuery] = useState('');
   const [showAIRecommendations, setShowAIRecommendations] = useState(false);
+  const [tutorialLoading, setTutorialLoading] = useState(false);
+  const [selectedVideoId, setSelectedVideoId] = useState<string | null>(null);
+  const [isTutorialOpen, setIsTutorialOpen] = useState(false);
+
+  // YouTube API key provided by user
+  const YT_API_KEY = 'AIzaSyCmxmuSS1T2BIbFYxjtu0ZnP7a-OqY-huQ';
 
   const fertilizers: Fertilizer[] = [
     {
@@ -381,14 +387,33 @@ const FertilizerFriend = () => {
                     )}
                   </div>
 
-                  {/* Tutorials button - opens YouTube search for the specific fertilizer */}
+                  {/* Tutorials button - fetch top YouTube tutorial and open modal */}
                   <div className="mt-3">
                     <Button
                       variant="outline"
                       size="sm"
-                      onClick={() => window.open(`https://www.youtube.com/results?search_query=${encodeURIComponent(fertilizer.name + ' fertilizer tutorial')}`, '_blank')}
+                      onClick={async () => {
+                        try {
+                          setTutorialLoading(true);
+                          const q = `${fertilizer.name} fertilizer tutorial`;
+                          const resp = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&maxResults=1&q=${encodeURIComponent(q)}&key=${YT_API_KEY}`);
+                          const data = await resp.json();
+                          const videoId = data?.items?.[0]?.id?.videoId;
+                          if (videoId) {
+                            setSelectedVideoId(videoId);
+                            setIsTutorialOpen(true);
+                          } else {
+                            alert('No tutorial video found on YouTube for this fertilizer.');
+                          }
+                        } catch (err) {
+                          console.error(err);
+                          alert('Failed to fetch tutorial video.');
+                        } finally {
+                          setTutorialLoading(false);
+                        }
+                      }}
                     >
-                      Watch Tutorials
+                      {tutorialLoading ? 'Loading...' : 'Watch Tutorials'}
                     </Button>
                   </div>
 
@@ -448,7 +473,37 @@ const FertilizerFriend = () => {
         </div>
       </div>
     </div>
-  );
-};
+  
+          {/* Tutorial Modal */}
+          {isTutorialOpen && selectedVideoId && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
+              <div className="bg-white rounded-lg max-w-4xl w-full mx-4 overflow-hidden">
+                <div className="p-3 flex items-center justify-between border-b">
+                  <h3 className="font-semibold">Tutorial</h3>
+                  <button
+                    onClick={() => { setIsTutorialOpen(false); setSelectedVideoId(null); }}
+                    className="text-sm text-gray-600 hover:text-gray-900"
+                  >
+                    Close
+                  </button>
+                </div>
+                <div className="w-full" style={{ aspectRatio: '16/9' }}>
+                  <iframe
+                    title="YouTube Tutorial"
+                    width="100%"
+                    height="100%"
+                    src={`https://www.youtube.com/embed/${selectedVideoId}`}
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                    frameBorder={0}
+                  />
+                </div>
+              </div>
+            </div>
+          )}
+        );
+      };
 
-export default FertilizerFriend;
+      export default FertilizerFriend;
+
+// Simple modal renderer for tutorial video (rendered inside this component via state)
