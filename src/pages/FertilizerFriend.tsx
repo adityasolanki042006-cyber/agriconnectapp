@@ -393,9 +393,9 @@ const FertilizerFriend = () => {
                       variant="outline"
                       size="sm"
                       onClick={async () => {
+                        const q = `${fertilizer.name} fertilizer tutorial`;
                         try {
                           setTutorialLoading(true);
-                          const q = `${fertilizer.name} fertilizer tutorial`;
                           const resp = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&maxResults=1&q=${encodeURIComponent(q)}&key=${YT_API_KEY}`);
                           const data = await resp.json();
                           const videoId = data?.items?.[0]?.id?.videoId;
@@ -403,11 +403,13 @@ const FertilizerFriend = () => {
                             setSelectedVideoId(videoId);
                             setIsTutorialOpen(true);
                           } else {
-                            alert('No tutorial video found on YouTube for this fertilizer.');
+                            // fallback: open YouTube search results if API returns no items
+                            window.open(`https://www.youtube.com/results?search_query=${encodeURIComponent(q)}`, '_blank');
                           }
                         } catch (err) {
-                          console.error(err);
-                          alert('Failed to fetch tutorial video.');
+                          console.error('YouTube API fetch error:', err);
+                          // fallback: open YouTube search in new tab when fetch fails
+                          window.open(`https://www.youtube.com/results?search_query=${encodeURIComponent(q)}`, '_blank');
                         } finally {
                           setTutorialLoading(false);
                         }
