@@ -31,18 +31,29 @@ const Navigation = () => {
 
   const dashboardHref = userType === 'businessman' ? '/business-dashboard' : '/dashboard';
 
-  const navItems = [
+  const baseNavItems = [
     { name: t('nav.home'), href: '/' },
     { name: t('nav.marketplace'), href: '/marketplace' },
     { name: t('nav.orders'), href: '/orders' },
     { name: t('nav.orderHistory'), href: '/order-history' },
-    { name: t('vendors.title'), href: '/vendors' },
     { name: 'Business Tips', href: '/business-tips' },
     { name: t('nav.search'), href: '/search' },
     { name: t('nav.aboutUs'), href: '/about' },
     { name: t('nav.contactSupport'), href: '/contact-support' },
     { name: t('nav.bio'), href: dashboardHref },
   ];
+
+  // Add Vendors link only for businessmen
+  const navItems = userType === 'businessman' 
+    ? [
+        baseNavItems[0], // home
+        baseNavItems[1], // marketplace
+        baseNavItems[2], // orders
+        baseNavItems[3], // order-history
+        { name: t('vendors.title'), href: '/vendors' },
+        ...baseNavItems.slice(4) // Business Tips onwards
+      ]
+    : baseNavItems;
 
   const handleNavigation = (href: string) => {
     if (href.startsWith('/')) {
